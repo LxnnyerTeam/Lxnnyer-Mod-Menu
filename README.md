@@ -5,7 +5,7 @@ Floating mod menu for il2cpp and other native android games. KittyMemory, MSHook
 
 Support Android 4.4.x up to Android S Preview. ARMv7, x86 and ARM64 architecture supported.
 
-![](https://i.imgur.com/zeumkBG.gif)
+<a href="https://gifyu.com/image/SrZDX"><img src="https://s12.gifyu.com/images/SrZDX.gif" alt="lv 0 20240629002939" border="0" /></a>
 
 # Known bug
 - Spinner does not show on some devices running Android 11. Should work again on Android 12
