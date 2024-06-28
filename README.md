@@ -14,16 +14,16 @@ Support Android 4.4.x up to Android S Preview. ARMv7, x86 and ARM64 architecture
 # Download
 Download this repo as ZIP, or clone using any git tools
 
-Or download Releases here https://github.com/LGLTeam/Android-Mod-Menu/releases
+Or download Releases here https://github.com/LxnnyerTeam/Lxnnyer-Mod-Menu/releases
 
 # Getting started
 **Go to this Wiki page to start reading:**
 
-https://github.com/LGLTeam/Android-Mod-Menu/wiki
+https://github.com/LxnnyerTeam/Lxnnyer-Mod-Menu/wiki
 
 # Help, Support, FAQ
 
-See: [Frequently Asked Questions (FAQ)](https://github.com/LGLTeam/Android-Mod-Menu/wiki/FAQ) where common questions are answered.
+See: [Frequently Asked Questions (FAQ)](https://github.com/LxnnyerTeam/Lxnnyer-Mod-Menu/wiki/FAQ) where common questions are answered.
 
 If you have installation or usage problems, try asking your questions on the forum sites, [Platinmods](https://platinmods.com/forums/modding-questions-discussions.11/), or [UnknownCheats](https://www.unknowncheats.me/forum/android/) or others.
 
@@ -36,6 +36,7 @@ As a result, the contact infomation has been removed as well. However you can fi
 # Credits
 Thanks to the following individuals whose code helped me develop this mod menu
 
+* Origin of the Project - https://github.com/LGLTeam/Android-Mod-Menu
 * Octowolve/Escanor - Mod menu: https://github.com/z3r0Sec/Substrate-Template-With-Mod-Menu and Hooking: https://github.com/z3r0Sec/Substrate-Hooking-Example
 * VanHoevenTR - Mod menu - https://github.com/LGLTeam/VanHoevenTR_Android_Mod_Menu
 * MrIkso - First mod menu template https://github.com/MrIkso/FloatingModMenu
