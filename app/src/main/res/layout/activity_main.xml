@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:gravity="center"
+	android:orientation="vertical"
+	android:background="#000000">
+
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="match_parent"
+		android:layout_height="250dp"
+		android:gravity="bottom|center_horizontal">
+
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center">
+
+			<ImageView
+				android:src="@drawable/ic_launcher"
+				android:id="@+id/icon"
+				android:layout_width="150dp"
+				android:layout_height="150dp"/>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Lxnnyer Mod Menu"
+				android:textSize="30sp"
+				android:typeface="serif"
+				android:textColor="#FFFFFFFF"
+				android:id="@+id/title"
+				android:padding="5dp"
+				android:background="@drawable/bg_joystick"/>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:gravity="center_horizontal"
+		android:paddingBottom="20dp">
+
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="match_parent"
+			android:layout_height="400dp"
+			android:gravity="center_horizontal">
+
+			<LinearLayout
+				android:orientation="vertical"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="20dp"
+				android:gravity="center_horizontal"
+				android:background="@drawable/bg_joystick"
+				android:paddingBottom="10dp">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Floating Window"
+					android:typeface="serif"
+					android:textColor="#FF0000"
+					android:padding="5dp"
+					android:background="@drawable/bg_joystick2"/>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/floatingWindow"
+					android:text="invoke-static {p0}, Lcom/android/support/Main;-&gt;Start(Landroid/content/Context;)V"
+					android:textSize="11sp"
+					android:textColor="#FFFFFFFF"
+					android:layout_marginTop="10dp"/>
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:orientation="vertical"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="20dp"
+				android:gravity="center_horizontal"
+				android:background="@drawable/bg_joystick"
+				android:paddingBottom="10dp">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Floating Permission"
+					android:typeface="serif"
+					android:textColor="#FF0000"
+					android:padding="5dp"
+					android:background="@drawable/bg_joystick2"/>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/permission"
+					android:text="&lt;uses-permission android:name=&quot;android.permission.SYSTEM_ALERT_WINDOW&quot; /&gt;"
+					android:textSize="12sp"
+					android:textColor="#FFFFFFFF"
+					android:layout_marginTop="10dp">
+
+				</TextView>
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:orientation="vertical"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="20dp"
+				android:gravity="center_horizontal"
+				android:background="@drawable/bg_joystick"
+				android:paddingBottom="10dp">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Service"
+					android:typeface="serif"
+					android:textColor="#FF0000"
+					android:padding="5dp"
+					android:background="@drawable/bg_joystick2"/>
+				
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/service"
+					android:text="&lt;service\nandroid:name=&quot;com.android.support.Launcher&quot;\nandroid:enabled=&quot;true&quot;\nandroid:exported=&quot;false&quot;\nandroid:stopWithTask=&quot;true&quot; /&gt;"
+					android:textSize="12sp"
+					android:textColor="#FFFFFFFF"
+					android:layout_marginTop="10dp"/>
+
+			</LinearLayout>
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Click On The Text To Copy"
+                android:textSize="13sp"
+                android:padding="8dp"
+                android:layout_marginTop="8dp"             
+                android:textColor="#FFFFFF"
+                android:typeface="serif"
+                android:id="@+id/Lxnnyer"
+                android:background="@drawable/bg_joystick"/>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+</LinearLayout>
+
