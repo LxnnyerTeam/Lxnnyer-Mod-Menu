@@ -14,35 +14,113 @@
 #include "Includes/Utils.h"
 #include "KittyMemory/MemoryPatch.h"
 #include "Menu/Setup.h"
-#include "Includes/Chams.h"
-#include "Includes/Vector3.hpp"
+
 //Target lib here
-#define targetLibName OBFUSCATE("libil2cpp.so")
+#define targetLibName OBFUSCATE("libFileA.so")
 
 #include "Includes/Macros.h"
+
+bool feature1, feature2, featureHookToggle, Health;
+int sliderValue = 1, level = 0;
+void *instanceBtn;
+
+// Hooking examples. Assuming you know how to write hook
+void (*AddMoneyExample)(void *instance, int amount);
+
+bool (*old_get_BoolExample)(void *instance);
+bool get_BoolExample(void *instance) {
+    if (instance != NULL && featureHookToggle) {
+        return true;
+    }
+    return old_get_BoolExample(instance);
+}
+
+float (*old_get_FloatExample)(void *instance);
+float get_FloatExample(void *instance) {
+    if (instance != NULL && sliderValue > 1) {
+        return (float) sliderValue;
+    }
+    return old_get_FloatExample(instance);
+}
+
+int (*old_Level)(void *instance);
+int Level(void *instance) {
+    if (instance != NULL && level) {
+        return (int) level;
+    }
+    return old_Level(instance);
+}
+
+void (*old_FunctionExample)(void *instance);
+void FunctionExample(void *instance) {
+    instanceBtn = instance;
+    if (instance != NULL) {
+        if (Health) {
+            *(int *) ((uint64_t) instance + 0x48) = 999;
+        }
+    }
+    return old_FunctionExample(instance);
+}
 
 // we will run our hacks in a new thread so our while loop doesn't block process main thread
 void *hack_thread(void *) {
     LOGI(OBFUSCATE("pthread created"));
-	
+
     //Check if target lib is loaded
     do {
         sleep(1);
     } while (!isLibraryLoaded(targetLibName));
 
     //Anti-lib rename
-    
+    /*
     do {
         sleep(1);
-    } while (!isLibraryLoaded("libLxnnyer.so"));
+    } while (!isLibraryLoaded("libYOURNAME.so"));*/
 
     LOGI(OBFUSCATE("%s has been loaded"), (const char *) targetLibName);
 
 #if defined(__aarch64__) //To compile this code for arm64 lib only. Do not worry about greyed out highlighting code, it still works
-   
+    // Hook example. Comment out if you don't use hook
+    // Strings in macros are automatically obfuscated. No need to obfuscate!
+    HOOK("str", FunctionExample, old_FunctionExample);
+    HOOK_LIB("libFileB.so", "0x123456", FunctionExample, old_FunctionExample);
+    HOOK_NO_ORIG("0x123456", FunctionExample);
+    HOOK_LIB_NO_ORIG("libFileC.so", "0x123456", FunctionExample);
+    HOOKSYM("__SymbolNameExample", FunctionExample, old_FunctionExample);
+    HOOKSYM_LIB("libFileB.so", "__SymbolNameExample", FunctionExample, old_FunctionExample);
+    HOOKSYM_NO_ORIG("__SymbolNameExample", FunctionExample);
+    HOOKSYM_LIB_NO_ORIG("libFileB.so", "__SymbolNameExample", FunctionExample);
+
+    // Patching offsets directly. Strings are automatically obfuscated too!
+    PATCH("0x20D3A8", "00 00 A0 E3 1E FF 2F E1");
+    PATCH_LIB("libFileB.so", "0x20D3A8", "00 00 A0 E3 1E FF 2F E1");
+
+    AddMoneyExample = (void(*)(void *,int))getAbsoluteAddress(targetLibName, 0x123456);
+
 #else //To compile this code for armv7 lib only.
 
-	LOGI(OBFUSCATE("Done"));
+    // Hook example. Comment out if you don't use hook
+    // Strings in macros are automatically obfuscated. No need to obfuscate!
+    HOOK("str", FunctionExample, old_FunctionExample);
+    HOOK_LIB("libFileB.so", "0x123456", FunctionExample, old_FunctionExample);
+    HOOK_NO_ORIG("0x123456", FunctionExample);
+    HOOK_LIB_NO_ORIG("libFileC.so", "0x123456", FunctionExample);
+    HOOKSYM("__SymbolNameExample", FunctionExample, old_FunctionExample);
+    HOOKSYM_LIB("libFileB.so", "__SymbolNameExample", FunctionExample, old_FunctionExample);
+    HOOKSYM_NO_ORIG("__SymbolNameExample", FunctionExample);
+    HOOKSYM_LIB_NO_ORIG("libFileB.so", "__SymbolNameExample", FunctionExample);
+
+    // Patching offsets directly. Strings are automatically obfuscated too!
+    PATCH("0x20D3A8", "00 00 A0 E3 1E FF 2F E1");
+    PATCH_LIB("libFileB.so", "0x20D3A8", "00 00 A0 E3 1E FF 2F E1");
+
+    //Restore changes to original
+    RESTORE("0x20D3A8");
+    RESTORE_LIB("libFileB.so", "0x20D3A8");
+
+    AddMoneyExample = (void (*)(void *, int)) getAbsoluteAddress(targetLibName, 0x123456);
+
+    LOGI(OBFUSCATE("Done"));
 #endif
 
     //Anti-leech
@@ -67,19 +145,45 @@ jobjectArray GetFeatureList(JNIEnv *env, jobject context) {
     jobjectArray ret;
 
     const char *features[] = {
-            OBFUSCATE("Category_Player mods"), //Not counted
-            OBFUSCATE("1_Toggle_God Mod"),
-			OBFUSCATE("2_Toggle_Run Backward"),
-			OBFUSCATE("3_Toggle_Fly Hack 1"),
-			OBFUSCATE("53_Toggle_MultiJump"),
-            OBFUSCATE("54_Toggle_Istant Lane Change"),
-			OBFUSCATE("55_Toggle_No Boundary Impact"),
-			OBFUSCATE("4_Toggle_Fly Hack"),
-			OBFUSCATE("5_SeekBar_Character Size_0_10"),
-            OBFUSCATE("6_SeekBar_Time scale_0_1000"),
-			OBFUSCATE("7_Button_Teleport+500m"),
-			OBFUSCATE("8_Toggle_Auto Revive"),
-			OBFUSCATE("9_InputValue_Score Multiplayer"),
+            OBFUSCATE("Category_The Category"), //Not counted
+            OBFUSCATE("Toggle_The toggle"),
+            OBFUSCATE(
+                    "100_Toggle_True_The toggle 2"), //This one have feature number assigned, and switched on by default
+            OBFUSCATE("110_Toggle_The toggle 3"), //This one too
+            OBFUSCATE("SeekBar_The slider_1_100"),
+            OBFUSCATE("SeekBar_Kittymemory slider example_1_5"),
+            OBFUSCATE("Spinner_The spinner_Items 1,Items 2,Items 3"),
+            OBFUSCATE("Button_The button"),
+            OBFUSCATE("ButtonLink_The button with link_https://www.youtube.com/"), //Not counted
+            OBFUSCATE("ButtonOnOff_The On/Off button"),
+            OBFUSCATE("CheckBox_The Check Box"),
+            OBFUSCATE("InputValue_Input number"),
+            OBFUSCATE("InputValue_1000_Input number 2"), //Max value
+            OBFUSCATE("InputText_Input text"),
+            OBFUSCATE("RadioButton_Radio buttons_OFF,Mod 1,Mod 2,Mod 3"),
+
+            //Create new collapse
+            OBFUSCATE("Collapse_Collapse 1"),
+            OBFUSCATE("CollapseAdd_Toggle_The toggle"),
+            OBFUSCATE("CollapseAdd_Toggle_The toggle"),
+            OBFUSCATE("123_CollapseAdd_Toggle_The toggle"),
+            OBFUSCATE("122_CollapseAdd_CheckBox_Check box"),
+            OBFUSCATE("CollapseAdd_Button_The button"),
+
+            //Create new collapse again
+            OBFUSCATE("Collapse_Collapse 2_True"),
+            OBFUSCATE("CollapseAdd_SeekBar_The slider_1_100"),
+            OBFUSCATE("CollapseAdd_InputValue_Input number"),
+
+            OBFUSCATE("RichTextView_This is text view, not fully HTML."
+                      "<b>Bold</b> <i>italic</i> <u>underline</u>"
+                      "<br />New line <font color='red'>Support colors</font>"
+                      "<br/><big>bigger Text</big>"),
+            OBFUSCATE("RichWebView_<html><head><style>body{color: white;}</style></head><body>"
+                      "This is WebView, with REAL HTML support!"
+                      "<div style=\"background-color: darkblue; text-align: center;\">Support CSS</div>"
+                      "<marquee style=\"color: green; font-weight:bold;\" direction=\"left\" scrollamount=\"5\" behavior=\"scroll\">This is <u>scrollable</u> text</marquee>"
+                      "</body></html>")
     };
 
     //Now you dont have to manually update the number everytime;
@@ -98,16 +202,45 @@ jobjectArray GetFeatureList2(JNIEnv *env, jobject context) {
     jobjectArray ret;
 
     const char *features[] = {
-            OBFUSCATE("Category_Player Abilities"), //Not counted
-            OBFUSCATE("10_Toggle_Unlimited PowerUp Time"),
-            OBFUSCATE("11_Toggle_Unlimited JetPack Time"),
-			OBFUSCATE("56_Toggle_Max PowerUp Level"),
-			OBFUSCATE("12_SeekBar_Characters Speed_0_10000"),
-            OBFUSCATE("13_SeekBar_Fly_0_100"),
-			OBFUSCATE("14_SeekBar_Jump Limit_0_4"),
-            OBFUSCATE("15_SeekBar_Jump Hight_0_1000"),
-			OBFUSCATE("16_SeekBar_Air Jump Hight_0_1000"),
-			OBFUSCATE("17_SeekBar_Gravity_0_10"),
+            OBFUSCATE("Category_The Category"), //Not counted
+            OBFUSCATE("Toggle_The toggle"),
+            OBFUSCATE(
+                    "100_Toggle_True_The toggle 2"), //This one have feature number assigned, and switched on by default
+            OBFUSCATE("110_Toggle_The toggle 3"), //This one too
+            OBFUSCATE("SeekBar_The slider_1_100"),
+            OBFUSCATE("SeekBar_Kittymemory slider example_1_5"),
+            OBFUSCATE("Spinner_The spinner_Items 1,Items 2,Items 3"),
+            OBFUSCATE("Button_The button"),
+            OBFUSCATE("ButtonLink_The button with link_https://www.youtube.com/"), //Not counted
+            OBFUSCATE("ButtonOnOff_The On/Off button"),
+            OBFUSCATE("CheckBox_The Check Box"),
+            OBFUSCATE("InputValue_Input number"),
+            OBFUSCATE("InputValue_1000_Input number 2"), //Max value
+            OBFUSCATE("InputText_Input text"),
+            OBFUSCATE("RadioButton_Radio buttons_OFF,Mod 1,Mod 2,Mod 3"),
+
+            //Create new collapse
+            OBFUSCATE("Collapse_Collapse 1"),
+            OBFUSCATE("CollapseAdd_Toggle_The toggle"),
+            OBFUSCATE("CollapseAdd_Toggle_The toggle"),
+            OBFUSCATE("123_CollapseAdd_Toggle_The toggle"),
+            OBFUSCATE("122_CollapseAdd_CheckBox_Check box"),
+            OBFUSCATE("CollapseAdd_Button_The button"),
+
+            //Create new collapse again
+            OBFUSCATE("Collapse_Collapse 2_True"),
+            OBFUSCATE("CollapseAdd_SeekBar_The slider_1_100"),
+            OBFUSCATE("CollapseAdd_InputValue_Input number"),
+
+            OBFUSCATE("RichTextView_This is text view, not fully HTML."
+                      "<b>Bold</b> <i>italic</i> <u>underline</u>"
+                      "<br />New line <font color='red'>Support colors</font>"
+                      "<br/><big>bigger Text</big>"),
+            OBFUSCATE("RichWebView_<html><head><style>body{color: white;}</style></head><body>"
+                      "This is WebView, with REAL HTML support!"
+                      "<div style=\"background-color: darkblue; text-align: center;\">Support CSS</div>"
+                      "<marquee style=\"color: green; font-weight:bold;\" direction=\"left\" scrollamount=\"5\" behavior=\"scroll\">This is <u>scrollable</u> text</marquee>"
+                      "</body></html>")
     };
 
     //Now you dont have to manually update the number everytime;
@@ -126,14 +259,45 @@ jobjectArray GetFeatureList3(JNIEnv *env, jobject context) {
     jobjectArray ret;
 
     const char *features[] = {
-            OBFUSCATE("Category_Camera Mods"), //Not counted
-            OBFUSCATE("18_Toggle_Follow Camera"),
-            OBFUSCATE("19_Toggle_Stop Camera"),
-			OBFUSCATE("20_SeekBar_Field of View (FOV)_0_30"),
-			OBFUSCATE("21_SeekBar_Near Clip_0_30"),
-			OBFUSCATE("22_SeekBar_Far Clip_0_30"),
-			OBFUSCATE("23_Toggle_Enbale Orthographic"),
-			OBFUSCATE("24_SeekBar_Orthographic Size_0_30"),
+            OBFUSCATE("Category_The Category"), //Not counted
+            OBFUSCATE("Toggle_The toggle"),
+            OBFUSCATE(
+                    "100_Toggle_True_The toggle 2"), //This one have feature number assigned, and switched on by default
+            OBFUSCATE("110_Toggle_The toggle 3"), //This one too
+            OBFUSCATE("SeekBar_The slider_1_100"),
+            OBFUSCATE("SeekBar_Kittymemory slider example_1_5"),
+            OBFUSCATE("Spinner_The spinner_Items 1,Items 2,Items 3"),
+            OBFUSCATE("Button_The button"),
+            OBFUSCATE("ButtonLink_The button with link_https://www.youtube.com/"), //Not counted
+            OBFUSCATE("ButtonOnOff_The On/Off button"),
+            OBFUSCATE("CheckBox_The Check Box"),
+            OBFUSCATE("InputValue_Input number"),
+            OBFUSCATE("InputValue_1000_Input number 2"), //Max value
+            OBFUSCATE("InputText_Input text"),
+            OBFUSCATE("RadioButton_Radio buttons_OFF,Mod 1,Mod 2,Mod 3"),
+
+            //Create new collapse
+            OBFUSCATE("Collapse_Collapse 1"),
+            OBFUSCATE("CollapseAdd_Toggle_The toggle"),
+            OBFUSCATE("CollapseAdd_Toggle_The toggle"),
+            OBFUSCATE("123_CollapseAdd_Toggle_The toggle"),
+            OBFUSCATE("122_CollapseAdd_CheckBox_Check box"),
+            OBFUSCATE("CollapseAdd_Button_The button"),
+
+            //Create new collapse again
+            OBFUSCATE("Collapse_Collapse 2_True"),
+            OBFUSCATE("CollapseAdd_SeekBar_The slider_1_100"),
+            OBFUSCATE("CollapseAdd_InputValue_Input number"),
+
+            OBFUSCATE("RichTextView_This is text view, not fully HTML."
+                      "<b>Bold</b> <i>italic</i> <u>underline</u>"
+                      "<br />New line <font color='red'>Support colors</font>"
+                      "<br/><big>bigger Text</big>"),
+            OBFUSCATE("RichWebView_<html><head><style>body{color: white;}</style></head><body>"
+                      "This is WebView, with REAL HTML support!"
+                      "<div style=\"background-color: darkblue; text-align: center;\">Support CSS</div>"
+                      "<marquee style=\"color: green; font-weight:bold;\" direction=\"left\" scrollamount=\"5\" behavior=\"scroll\">This is <u>scrollable</u> text</marquee>"
+                      "</body></html>")
     };
 
     //Now you dont have to manually update the number everytime;
@@ -152,71 +316,45 @@ jobjectArray GetFeatureList4(JNIEnv *env, jobject context) {
     jobjectArray ret;
 
     const char *features[] = {
-            OBFUSCATE("Category_Chams Mods"),
-            OBFUSCATE("25_SeekBar_Chams Mode_0_4"),
-            OBFUSCATE("26_CheckBox_Default Chams"),
-            OBFUSCATE("27_CheckBox_Shading Chams"),
-            OBFUSCATE("28_CheckBox_Wireframe Chams"),
-            OBFUSCATE("29_CheckBox_Glow Chams"),
-            OBFUSCATE("30_CheckBox_Outline Chams"),
-            OBFUSCATE("31_CheckBox_Rainbow Chams"), 
-            OBFUSCATE("32_SeekBar_Line Width_0_12"),
-            OBFUSCATE("33_SeekBar_Color R_0_255"),
-            OBFUSCATE("34_SeekBar_Color G_0_255"),
-            OBFUSCATE("35_SeekBar_Color B_0_255"),
-			OBFUSCATE("Category_Other Map Mods"),
-			OBFUSCATE("36_Toggle_No Clip"),
-            OBFUSCATE("47_Toggle_No Coins PicUp"),
-    };
+            OBFUSCATE("Category_The Category"), //Not counted
+            OBFUSCATE("Toggle_The toggle"),
+            OBFUSCATE(
+                    "100_Toggle_True_The toggle 2"), //This one have feature number assigned, and switched on by default
+            OBFUSCATE("110_Toggle_The toggle 3"), //This one too
+            OBFUSCATE("SeekBar_The slider_1_100"),
+            OBFUSCATE("SeekBar_Kittymemory slider example_1_5"),
+            OBFUSCATE("Spinner_The spinner_Items 1,Items 2,Items 3"),
+            OBFUSCATE("Button_The button"),
+            OBFUSCATE("ButtonLink_The button with link_https://www.youtube.com/"), //Not counted
+            OBFUSCATE("ButtonOnOff_The On/Off button"),
+            OBFUSCATE("CheckBox_The Check Box"),
+            OBFUSCATE("InputValue_Input number"),
+            OBFUSCATE("InputValue_1000_Input number 2"), //Max value
+            OBFUSCATE("InputText_Input text"),
+            OBFUSCATE("RadioButton_Radio buttons_OFF,Mod 1,Mod 2,Mod 3"),
 
-    //Now you dont have to manually update the number everytime;
-    int Total_Feature = (sizeof features / sizeof features[0]);
-    ret = (jobjectArray)
-            env->NewObjectArray(Total_Feature, env->FindClass(OBFUSCATE("java/lang/String")),
-                                env->NewStringUTF(""));
+            //Create new collapse
+            OBFUSCATE("Collapse_Collapse 1"),
+            OBFUSCATE("CollapseAdd_Toggle_The toggle"),
+            OBFUSCATE("CollapseAdd_Toggle_The toggle"),
+            OBFUSCATE("123_CollapseAdd_Toggle_The toggle"),
+            OBFUSCATE("122_CollapseAdd_CheckBox_Check box"),
+            OBFUSCATE("CollapseAdd_Button_The button"),
 
-    for (int i = 0; i < Total_Feature; i++)
-        env->SetObjectArrayElement(ret, i, env->NewStringUTF(features[i]));
+            //Create new collapse again
+            OBFUSCATE("Collapse_Collapse 2_True"),
+            OBFUSCATE("CollapseAdd_SeekBar_The slider_1_100"),
+            OBFUSCATE("CollapseAdd_InputValue_Input number"),
 
-    return (ret);
-}
-
-jobjectArray GetFeatureList5(JNIEnv *env, jobject context) {
-    jobjectArray ret;
-
-    const char *features[] = {
-            OBFUSCATE("Category_Shoping Mods"), //Not counted
-            OBFUSCATE("48_Toggle_Free Shoping"),
-            OBFUSCATE("49_Toggle_Unlimited Everythig"),
-            OBFUSCATE("50_Toggle_Unlook All Characters"),
-            OBFUSCATE("51_Toggle_Unlook All Skin"),
-            OBFUSCATE("52_Toggle_Coins Doubler"),
-    };
-
-    //Now you dont have to manually update the number everytime;
-    int Total_Feature = (sizeof features / sizeof features[0]);
-    ret = (jobjectArray)
-            env->NewObjectArray(Total_Feature, env->FindClass(OBFUSCATE("java/lang/String")),
-                                env->NewStringUTF(""));
-
-    for (int i = 0; i < Total_Feature; i++)
-        env->SetObjectArrayElement(ret, i, env->NewStringUTF(features[i]));
-
-    return (ret);
-}
-
-jobjectArray GetFeatureList6(JNIEnv *env, jobject context) {
-    jobjectArray ret;
-
-    const char *features[] = {
-            OBFUSCATE("Category_Key Login"),
-            OBFUSCATE("InputText2_Enter key"),
-			OBFUSCATE("Category_Extra Details"),
-            OBFUSCATE("ButtonLink_Get Key_https://1shortlink.com/note/Eo5fj30oph"),
-			OBFUSCATE("ButtonLink_Follow GitHub_https://github.com/LxnnyerTeam"),
-			OBFUSCATE("RichTextView_<font>click the button below to see a video that explanis how to get key.</font>"),
-			OBFUSCATE("ButtonLink_Watch Video_https://www.youtube.com/"),
-            
+            OBFUSCATE("RichTextView_This is text view, not fully HTML."
+                      "<b>Bold</b> <i>italic</i> <u>underline</u>"
+                      "<br />New line <font color='red'>Support colors</font>"
+                      "<br/><big>bigger Text</big>"),
+            OBFUSCATE("RichWebView_<html><head><style>body{color: white;}</style></head><body>"
+                      "This is WebView, with REAL HTML support!"
+                      "<div style=\"background-color: darkblue; text-align: center;\">Support CSS</div>"
+                      "<marquee style=\"color: green; font-weight:bold;\" direction=\"left\" scrollamount=\"5\" behavior=\"scroll\">This is <u>scrollable</u> text</marquee>"
+                      "</body></html>")
     };
 
     //Now you dont have to manually update the number everytime;
@@ -242,7 +380,79 @@ void Changes(JNIEnv *env, jclass clazz, jobject obj,
     //BE CAREFUL NOT TO ACCIDENTLY REMOVE break;
 
     switch (featNum) {
-        
+        case 0:
+            // A much simpler way to patch hex via KittyMemory without need to specify the struct and len. Spaces or without spaces are fine
+            // ARMv7 assembly example
+            // MOV R0, #0x0 = 00 00 A0 E3
+            // BX LR = 1E FF 2F E1
+            PATCH_LIB_SWITCH("libil2cpp.so", "0x100000", "00 00 A0 E3 1E FF 2F E1", boolean);
+            break;
+        case 100:
+            //Reminder that the strings are auto obfuscated
+            //Switchable patch
+            PATCH_SWITCH("0x400000", "00 00 A0 E3 1E FF 2F E1", boolean);
+            PATCH_LIB_SWITCH("libil2cpp.so", "0x200000", "00 00 A0 E3 1E FF 2F E1", boolean);
+            PATCH_SYM_SWITCH("_SymbolExample", "00 00 A0 E3 1E FF 2F E1", boolean);
+            PATCH_LIB_SYM_SWITCH("libNativeGame.so", "_SymbolExample", "00 00 A0 E3 1E FF 2F E1", boolean);
+
+            //Restore patched offset to original
+            RESTORE("0x400000");
+            RESTORE_LIB("libil2cpp.so", "0x400000");
+            RESTORE_SYM("_SymbolExample");
+            RESTORE_LIB_SYM("libil2cpp.so", "_SymbolExample");
+            break;
+        case 110:
+            break;
+        case 1:
+            if (value >= 1) {
+                sliderValue = value;
+            }
+            break;
+        case 2:
+            switch (value) {
+                //For noobies
+                case 0:
+                    RESTORE("0x0");
+                    break;
+                case 1:
+                    PATCH("0x0", "01 00 A0 E3 1E FF 2F E1");
+                    break;
+                case 2:
+                    PATCH("0x0", "02 00 A0 E3 1E FF 2F E1");
+                    break;
+            }
+            break;
+        case 3:
+            switch (value) {
+                case 0:
+                    LOGD(OBFUSCATE("Selected item 1"));
+                    break;
+                case 1:
+                    LOGD(OBFUSCATE("Selected item 2"));
+                    break;
+                case 2:
+                    LOGD(OBFUSCATE("Selected item 3"));
+                    break;
+            }
+            break;
+        case 4:
+            // Since we have instanceBtn as a field, we can call it out of Update hook function
+            if (instanceBtn != NULL)
+                AddMoneyExample(instanceBtn, 999999);
+            // MakeToast(env, obj, OBFUSCATE("Button pressed"), Toast::LENGTH_SHORT);
+            break;
+        case 5:
+            break;
+        case 6:
+            featureHookToggle = boolean;
+            break;
+        case 7:
+            level = value;
+            break;
+        case 8:
+            break;
+        case 9:
+            break;
     }
 }
 
@@ -256,14 +466,7 @@ void lib_main() {
 int RegisterMenu(JNIEnv *env) {
     JNINativeMethod methods[] = {
             {OBFUSCATE("Icon"), OBFUSCATE("()Ljava/lang/String;"), reinterpret_cast<void *>(Icon)},
-			{OBFUSCATE("Sittingsicon"), OBFUSCATE("()Ljava/lang/String;"), reinterpret_cast<void *>(Sittingsicon)},
-			{OBFUSCATE("Shoopmodsicon"), OBFUSCATE("()Ljava/lang/String;"), reinterpret_cast<void *>(Shoopmodsicon)},
-			{OBFUSCATE("Mapmodsicon"), OBFUSCATE("()Ljava/lang/String;"), reinterpret_cast<void *>(Mapmodsicon)},
-			{OBFUSCATE("Cameraicon"), OBFUSCATE("()Ljava/lang/String;"), reinterpret_cast<void *>(Cameraicon)},
-			{OBFUSCATE("Playerabilitiesicon"), OBFUSCATE("()Ljava/lang/String;"), reinterpret_cast<void *>(Playerabilitiesicon)},
-			{OBFUSCATE("Playermodsicon"), OBFUSCATE("()Ljava/lang/String;"), reinterpret_cast<void *>(Playermodsicon)},
-			{OBFUSCATE("Back"), OBFUSCATE("()Ljava/lang/String;"), reinterpret_cast<void *>(Back)},
-			{OBFUSCATE("closebt"), OBFUSCATE("()Ljava/lang/String;"), reinterpret_cast<void *>(closebt)},
+			{OBFUSCATE("Background"), OBFUSCATE("()Ljava/lang/String;"), reinterpret_cast<void *>(Background)},
             {OBFUSCATE("IconWebViewData"),  OBFUSCATE("()Ljava/lang/String;"), reinterpret_cast<void *>(IconWebViewData)},
             {OBFUSCATE("IsGameLibLoaded"),  OBFUSCATE("()Z"), reinterpret_cast<void *>(isGameLibLoaded)},
             {OBFUSCATE("Init"),  OBFUSCATE("(Landroid/content/Context;Landroid/widget/TextView;Landroid/widget/TextView;)V"), reinterpret_cast<void *>(Init)},
@@ -272,8 +475,6 @@ int RegisterMenu(JNIEnv *env) {
 			{OBFUSCATE("GetFeatureList2"),  OBFUSCATE("()[Ljava/lang/String;"), reinterpret_cast<void *>(GetFeatureList2)},
 			{OBFUSCATE("GetFeatureList3"),  OBFUSCATE("()[Ljava/lang/String;"), reinterpret_cast<void *>(GetFeatureList3)},
 			{OBFUSCATE("GetFeatureList4"),  OBFUSCATE("()[Ljava/lang/String;"), reinterpret_cast<void *>(GetFeatureList4)},
-		    {OBFUSCATE("GetFeatureList5"),  OBFUSCATE("()[Ljava/lang/String;"), reinterpret_cast<void *>(GetFeatureList5)},
-			{OBFUSCATE("GetFeatureList6"),  OBFUSCATE("()[Ljava/lang/String;"), reinterpret_cast<void *>(GetFeatureList6)},
     };
 
     jclass clazz = env->FindClass(OBFUSCATE("com/android/support/Menu"));
