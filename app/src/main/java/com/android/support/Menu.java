@@ -1,5 +1,3 @@
-//Please don't replace listeners with lambda!
-
 package com.android.support;
 
 import android.annotation.SuppressLint;
@@ -63,21 +61,21 @@ import static android.widget.RelativeLayout.ALIGN_PARENT_LEFT;
 import static android.widget.RelativeLayout.ALIGN_PARENT_RIGHT;
 
 import org.xml.sax.ErrorHandler;
-import android.widget.TableLayout.LayoutParams;
-import android.widget.SearchView.OnCloseListener;
+import android.widget.HorizontalScrollView;
 import android.view.View.OnClickListener;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.widget.TableLayout.LayoutParams;
 import android.view.View.OnTouchListener;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import java.util.Objects;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.animation.RotateAnimation;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
-import android.content.res.AssetManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.graphics.Typeface;
-import android.transition.Visibility;
+import android.content.res.AssetManager;
+
 public class Menu {
     //********** Here you can easly change the menu appearance **********//
 
@@ -85,172 +83,91 @@ public class Menu {
     public static final String TAG = "Mod_Menu"; //Tag for logcat
 
     int TEXT_COLOR = Color.parseColor("#FFFFFF");
-    int TEXT_COLOR_2 = Color.parseColor("#143568");
-    int BTN_COLOR = Color.parseColor("#143568");
-    int MENU_BG_COLOR = Color.parseColor("#143568"); //#AARRGGBB
-    int MENU_FEATURE_BG_COLOR = Color.parseColor("#FFFFFF"); //#AARRGGBB
-    int MENU_WIDTH = 260;
-    int MENU_HEIGHT = 280;
+    int TEXT_COLOR_2 = Color.parseColor("#FFFFFF");
+    int BTN_COLOR = Color.parseColor("#FFFF0000");
+    int MENU_BG_COLOR = Color.parseColor("#EE1C2A35"); //#AARRGGBB
+    int MENU_FEATURE_BG_COLOR = Color.parseColor("#00141C22"); //#AARRGGBB
+    int MENU_WIDTH = 250;
+    int MENU_HEIGHT = 160;
     int POS_X = 0;
     int POS_Y = 100;
 
-    float MENU_CORNER = 30f;
-    int ICON_SIZE = 60; //Change both width and height of image
-    float ICON_ALPHA = 1f; //Transparent
+    float MENU_CORNER = 4f;
+    int ICON_SIZE = 65; //Change both width and height of image
+    float ICON_ALPHA = 0.7f; //Transparent
     int ToggleON = Color.GREEN;
     int ToggleOFF = Color.RED;
     int BtnON = Color.parseColor("#1b5e20");
     int BtnOFF = Color.parseColor("#7f0000");
-    int CategoryBG = Color.parseColor("#143568");
-    int SeekBarColor = Color.parseColor("#143568");
-    int SeekBarProgressColor = Color.parseColor("#143568");
-    int CheckBoxColor = Color.parseColor("#143568");
-    int RadioColor = Color.parseColor("#143568");
-    String NumberTxtColor = "#143568";
-	int TAB_LAYOUT_COLOR = Color.parseColor("#EBF1FD");
+    int CategoryBG = Color.parseColor("#ABFF0000");
+    int SeekBarColor = Color.parseColor("#FFFF0000");
+    int SeekBarProgressColor = Color.parseColor("#FFFF0000");
+    int CheckBoxColor = Color.parseColor("#ABFF0000");
+    int RadioColor = Color.parseColor("#ABFF0000");
+    String NumberTxtColor = "#FFFFFF";
+	
+	int LST_MAB = Color.parseColor(new String(Base64.decode("Izk5RkYwMDAw", 0)));
+	int TAB_STROKE_COLOR = Color.parseColor("#FFFFFF");
+	int TAB_TEXT_COLOR = Color.parseColor("#FFFFFF");
+    float TAB_TEXT_SIZE = 12.5f;
+	HorizontalScrollView Scroll;
+    ScrollView H;
+	LinearLayout l, tl;
+	int CI = 1;
+	int yen = 4;
+	int vxy = 3;
+	LinearLayout h, h2, v1, v2, v3, v4, v5;
+    TextView t1, t2, t3, t4;
     //********************************************************************//
 
     RelativeLayout mCollapsed, mRootContainer;
-    LinearLayout mExpanded, mods,mods2,mods3,mods4,mods5,mods6, mSettings, mCollapse;
+    LinearLayout mExpanded, mods, mSettings, mCollapse,mods2,mods3,mods4;
     LinearLayout.LayoutParams scrlLLExpanded, scrlLL;
-    WindowManager mWindowManager, mWindowManager2;
-    WindowManager.LayoutParams vmParams, vmParams2;
+    WindowManager mWindowManager;
+    WindowManager.LayoutParams vmParams;
     ImageView startimage;
     FrameLayout rootFrame;
     ScrollView scrollView;
     boolean stopChecking, overlayRequired;
     Context getContext;
-	int currenttabindex = 1;
-	LinearLayout MainGridly,gridbuttonhold,gridbuttonhold2,gridbuttonhold3;
-    Button button,button2,button3,button4,button5,button6;
-	TextView back;
-	private boolean view1 = false;
-	final TextView title;
-	
+	LinearLayout subLayout;
+	Button hideBtn,closeBtn;
+	BitmapDrawable LxnnyerModMenu;
 
     //initialize methods from the native library
     native void Init(Context context, TextView title, TextView subTitle);
 
     native String Icon();
 	
-	native String closebt();
-	
-	native String Back();
-	
-	native String Playermodsicon();
-	
-	native String Playerabilitiesicon();
-	
-	native String Shoopmodsicon();
-
-	native String Mapmodsicon();
-	
-	native String Sittingsicon();
-	
-	native String Cameraicon();
+	native String Background();
 
     native String IconWebViewData();
+	
+	native String[] GetFeatureList();
 
-    native String[] GetFeatureList();
-	
 	native String[] GetFeatureList2();
-	
+
 	native String[] GetFeatureList3();
-	
+
 	native String[] GetFeatureList4();
-	
-	native String[] GetFeatureList5();
-	
-	native String[] GetFeatureList6();
 
     native String[] SettingsList();
 
     native boolean IsGameLibLoaded();
 	
-	
-	private void AddColor(View view, int color, int strokeWidth, int dashWidth, int dashGap, int strokeColor, int r1, int r2, int r3, int r4, int r5, int r6, int r7, int r8) {
+	private void AddColor(View view, int color, float corner, int strokeWidth, int strokeColor) {
         GradientDrawable gd = new GradientDrawable();
         gd.setColor(color);
-        gd.setCornerRadii(new float[]{r1, r2, r3, r4, r5, r6, r7, r8});
-        gd.setStroke(strokeWidth, strokeColor, dashWidth, dashGap);
+        gd.setCornerRadius(corner);
+        gd.setStroke(strokeWidth, strokeColor);
         view.setBackgroundDrawable(gd);
     }
-	
-	private void MyToast(Context context, String text) {
-		TextView textView = new TextView(context);
-		textView.setText(text);
-		textView.setTextSize(15f);
-		textView.setTextColor(TEXT_COLOR);
-		textView.setPadding(20,10,20,10);
-		AddColor(textView, BTN_COLOR, 3, 0, 0, Color.WHITE, 30, 30, 0, 0, 30, 30, 0, 0);
-		Toast toast = Toast.makeText(context,null, Toast.LENGTH_SHORT);
-		toast.setView(textView);
-		toast.show();
-	}
-	
-	private void Gridlayout(int i, View v) {
-		switch(i) {
-			case 1:
-				MainGridly.setVisibility(View.GONE);
-				back.setVisibility(View.VISIBLE);
-				scrollView.removeAllViews();
-				scrollView.addView(mods);
-				scrollView.scrollTo(0, 0);
-				view1 = true;
-				break;
-			case 2:
-				MainGridly.setVisibility(View.GONE);
-				back.setVisibility(View.VISIBLE);
-				scrollView.removeAllViews();
-				scrollView.addView(mods2);
-				scrollView.scrollTo(0, 0);
-				view1 = true;
-				break;
-				
-			case 3:
-				MainGridly.setVisibility(View.GONE);
-				back.setVisibility(View.VISIBLE);
-				scrollView.removeAllViews();
-				scrollView.addView(mods3);
-				scrollView.scrollTo(0, 0);
-				view1 = true;
-				break;
-			case 4:
-				MainGridly.setVisibility(View.GONE);
-				back.setVisibility(View.VISIBLE);
-				scrollView.removeAllViews();
-				scrollView.addView(mods4);
-				scrollView.scrollTo(0, 0);
-				view1 = true;
-				break;
-				
-			case 5:
-				MainGridly.setVisibility(View.GONE);
-				back.setVisibility(View.VISIBLE);
-				scrollView.removeAllViews();
-				scrollView.addView(mods5);
-				scrollView.scrollTo(0, 0);
-				view1 = true;
-				break;
-				
-			case 6:
-				MainGridly.setVisibility(View.GONE);
-				back.setVisibility(View.VISIBLE);
-				scrollView.removeAllViews();
-				scrollView.addView(mSettings);
-				scrollView.scrollTo(0, 0);
-				view1 = true;
-				break;
-				}
-	}
-	
 
     //Here we write the code for our Menu
     // Reference: https://www.androidhive.info/2016/11/android-floating-widget-like-facebook-chat-head/
     public Menu(Context context) {
-		
-		Typeface y = Typeface.createFromAsset(context.getAssets(), "Lxnnyer.ModMenu"); 
-		
+		Typeface blackfont = Typeface.createFromAsset(context.getAssets(), "Lxnnyer.ModMenu"); 
+
         getContext = context;
         Preferences.context = context;
         rootFrame = new FrameLayout(context); // Global markup
@@ -270,8 +187,12 @@ public class Menu {
         GradientDrawable gdMenuBody = new GradientDrawable();
         gdMenuBody.setCornerRadius(MENU_CORNER); //Set corner
         gdMenuBody.setColor(MENU_BG_COLOR); //Set background color
-        //gdMenuBody.setStroke(1, Color.parseColor("#32cb00")); //Set border
-        mExpanded.setBackground(gdMenuBody); //Apply GradientDrawable to it
+        gdMenuBody.setStroke(1, Color.parseColor("#32cb00")); //Set border
+        //mExpanded.setBackground(gdMenuBody); //Apply GradientDrawable to it
+		byte[] bgdecode = Base64.decode(Background(), 0);
+		Bitmap backgroundbitmap = BitmapFactory.decodeByteArray(bgdecode,0,bgdecode.length);
+        LxnnyerModMenu = new BitmapDrawable(backgroundbitmap);
+		mExpanded.setBackground(LxnnyerModMenu);
 
         //********** The icon to open mod menu **********
         startimage = new ImageView(context);
@@ -310,65 +231,41 @@ public class Menu {
         wView.getSettings().setAppCacheEnabled(true);
         wView.setOnTouchListener(onTouchListener());
 		
+		//********** Sub Layout **********
+		subLayout = new LinearLayout(context);
+		subLayout.setOrientation(1);
+		subLayout.setPadding(5, 5, 5, 5);
 
         //********** Settings icon **********
-		back = new TextView(context); //Android 5 can't show ⚙, instead show other icon instead
-        byte[] bgdecode1 = Base64.decode(Back(), 0);
-		Bitmap backbitmap = BitmapFactory.decodeByteArray(bgdecode1,0,bgdecode1.length);
-        BitmapDrawable backbt = new BitmapDrawable(backbitmap);
-		back.setBackground(backbt);
-		backbt.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
-        back.setTextColor(TEXT_COLOR);
-        back.setTypeface(Typeface.DEFAULT_BOLD);
-        back.setTextSize(20.0f);
-		back.setVisibility(View.GONE);
-        RelativeLayout.LayoutParams rlback = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-        rlback.addRule(ALIGN_PARENT_LEFT);
-        back.setLayoutParams(rlback);
-		back.setOnClickListener(new OnClickListener(){
-			public void onClick(View v){
-				title.setText(Html.fromHtml("<b>"+"Lxnnyer Mod Menu"+"<b>"));
-				title.setTypeface(Typeface.createFromAsset(getContext.getAssets(), "Lxnnyer.ModMenu"));
-				title.setTextSize(25.0f);
-				if (view1 == true) {
-					MainGridly.setVisibility(View.VISIBLE);
-					back.setVisibility(View.GONE);
-					scrollView.removeAllViews();
-					scrollView.addView(MainGridly);
-					scrollView.scrollTo(0, 0);
-					view1 = true;
-				}
-			}
-
-			
-		});
-		
+		H = new ScrollView(context);
+        H.setVisibility(8);
+        H.setLayoutParams(new android.widget.LinearLayout.LayoutParams(MATCH_PARENT, dp(220)));
 		
         TextView settings = new TextView(context); //Android 5 can't show ⚙, instead show other icon instead
-        byte[] bgdecode = Base64.decode(closebt(), 0);
-		Bitmap backgroundbitmap = BitmapFactory.decodeByteArray(bgdecode,0,bgdecode.length);
-        BitmapDrawable blackgamer = new BitmapDrawable(backgroundbitmap);
-		settings.setBackground(blackgamer);
-		blackgamer.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+        settings.setText(Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M ? "🐱" : "🐱");
         settings.setTextColor(TEXT_COLOR);
         settings.setTypeface(Typeface.DEFAULT_BOLD);
-        settings.setTextSize(20.0f);
-		settings.setLayoutParams(new LayoutParams(WRAP_CONTENT,WRAP_CONTENT));
+        settings.setTextSize(25.0f);
         RelativeLayout.LayoutParams rlsettings = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         rlsettings.addRule(ALIGN_PARENT_RIGHT);
         settings.setLayoutParams(rlsettings);
+        final Context finalContext;
+        finalContext = context;
         settings.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View view) {
-					mCollapsed.setVisibility(View.VISIBLE);
-					mCollapsed.setAlpha(ICON_ALPHA);
-					mExpanded.setVisibility(View.GONE);
-				}
-			});
+                boolean settingsOpen;
+
+                @Override
+                public void onClick(View v) {
+                    Intent var2 = new Intent("android.intent.action.VIEW");
+                    var2.setFlags(268435456);
+                    var2.setData(Uri.parse("https://github.com/LxnnyerTeam"));
+                    finalContext.startActivity(var2);
+                }
+            });
 
         //********** Settings **********
         mSettings = new LinearLayout(context);
         mSettings.setOrientation(LinearLayout.VERTICAL);
-		mSettings.setPadding(5,0,5,0);
         featureList(SettingsList(), mSettings);
 
         //********** Title **********
@@ -376,13 +273,15 @@ public class Menu {
         titleText.setPadding(10, 5, 10, 5);
         titleText.setVerticalGravity(16);
 
-        title = new TextView(context);
+        TextView title = new TextView(context);
         title.setTextColor(TEXT_COLOR);
-        title.setTextSize(25.0f);
-		title.setTypeface(y);
+        title.setTextSize(20.0f);
+		title.setTypeface(blackfont);
         title.setGravity(Gravity.CENTER);
         RelativeLayout.LayoutParams rl = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         rl.addRule(RelativeLayout.CENTER_HORIZONTAL);
+		rl.addRule(RelativeLayout.CENTER_VERTICAL);
+		rl.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         title.setLayoutParams(rl);
 
         //********** Sub title **********
@@ -395,28 +294,168 @@ public class Menu {
         subTitle.setTextSize(10.0f);
         subTitle.setGravity(Gravity.CENTER);
         subTitle.setPadding(0, 0, 0, 5);
-		
-		LinearLayout relative = new LinearLayout(context);
-		relative.setPadding(30, 5, 30, 5);
-		relative.setVerticalGravity(Gravity.CENTER);
-		TextView textinfo = new TextView(context);
-		textinfo.setText("All Mods");
-		textinfo.setTextColor(TEXT_COLOR);
-		textinfo.setTextSize(16f);
-		textinfo.setTypeface(null,1);
-		textinfo.setLayoutParams(new LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-		
-		
-		textinfo.setGravity(Gravity.CENTER);
-		GradientDrawable gdtext = new GradientDrawable();
-		gdtext.setColor(BTN_COLOR);
-		gdtext.setStroke(3, TEXT_COLOR_2);
-		gdtext.setCornerRadius(30);
-		textinfo.setBackgroundDrawable(gdtext);
+
+        LayoutParams layoutParams2 = new LayoutParams(WRAP_CONTENT, MATCH_PARENT);
+		layoutParams2.setMargins(5, 2, 5, 2);
+
+		//********** HORIZONTAL SPLITS **********
+		h = new LinearLayout(context);
+		h.setBackgroundColor(TAB_STROKE_COLOR);
+		h.setPadding(-1, 2, -1, 1);
+
+		h2 = new LinearLayout(context);
+		h2.setBackgroundColor(TAB_STROKE_COLOR);
+		h2.setPadding(-1, 2, -1, 1);
+
+		//********** VERTICAL SPLITS **********
+		v1 = new LinearLayout(context);
+	    v1.setBackgroundColor(TAB_STROKE_COLOR);
+		v1.setPadding(2, 5, 1, 5);
+		v1.setLayoutParams(layoutParams2);
+
+		v2 = new LinearLayout(context);
+        v2.setBackgroundColor(TAB_STROKE_COLOR);
+		v2.setPadding(2, 5, 1, 5);
+		v2.setLayoutParams(layoutParams2);
+
+		v3 = new LinearLayout(context);
+        v3.setBackgroundColor(TAB_STROKE_COLOR);
+		v3.setPadding(2, 5, 1, 5);
+		v3.setLayoutParams(layoutParams2);
+
+		v4 = new LinearLayout(context);
+        v4.setBackgroundColor(TAB_STROKE_COLOR);
+		v4.setPadding(2, 5, 1, 5);
+		v4.setLayoutParams(layoutParams2);
+
+		v5 = new LinearLayout(context);
+        v5.setBackgroundColor(-1);
+		v5.setPadding(2, 5, 1, 5);
+		v5.setLayoutParams(layoutParams2);
+
+
+
+		//********** MAIN LAYOUT OF TABS **********
+		l = new LinearLayout(context);
+		l.setLayoutParams(new LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
+        l.setOrientation(1);
+        l.setPadding(3, 0, 3, 0);
+
+		//********** HorizontalScrollView for Menu Buttons **********
+        Scroll = new HorizontalScrollView(context); 
+        Scroll.setEnabled(true);
+        Scroll.setHorizontalScrollBarEnabled(false);
+
+		//********** Layout **********
+        tl = new LinearLayout(context);
+        tl.setOrientation(0);
+
+		LayoutParams layoutParams = new LayoutParams(MATCH_PARENT, WRAP_CONTENT);
+		layoutParams.setMargins(-2, 5, -2, 5);
+
+        //****************************** TAB 1 *****************************\\
+        t1 = new TextView(context);
+		t1.setLayoutParams(layoutParams);
+        t1.setText("Menu\n1");
+		t1.setGravity(17);
+        t1.setTextColor(TAB_TEXT_COLOR);
+        t1.setTextSize(TAB_TEXT_SIZE);
+		t1.setPadding(30, 15, 30, 15);
+		t1.setShadowLayer(7.0f, 0.0f, 0.0f, Color.BLACK);
+        AddColor(t1, LST_MAB, 0, 3, TAB_STROKE_COLOR);
+        t1.setTypeface(null, 1);
+        t1.setOnClickListener(new OnClickListener(){
+
+                @Override
+                public void onClick(View p1) {
+                    scrollView.removeAllViews();
+					scrollView.addView(mods);
+					AddColor(t1, LST_MAB, 0, 3, TAB_STROKE_COLOR);
+					AddColor(t2, Color.TRANSPARENT, 0, 0, TAB_STROKE_COLOR);
+					AddColor(t3, Color.TRANSPARENT, 0, 0, TAB_STROKE_COLOR);
+					AddColor(t4, Color.TRANSPARENT, 0, 0, TAB_STROKE_COLOR);
+
+                }
+            });
+
+        //****************************** TAB 2 *****************************\\
+        t2 = new TextView(context);
+		t2.setLayoutParams(layoutParams);
+        t2.setText("Menu\n2");
+		t2.setGravity(17);
+        t2.setTextColor(TAB_TEXT_COLOR);
+        t2.setTextSize(TAB_TEXT_SIZE);
+		t2.setPadding(30, 15, 30, 15);
+		t2.setShadowLayer(7.0f, 0.0f, 0.0f, Color.BLACK);
+        AddColor(t2, Color.TRANSPARENT, 0, 0, TAB_STROKE_COLOR);
+        t2.setTypeface(null, 1);
+        t2.setOnClickListener(new OnClickListener(){
+
+                @Override
+                public void onClick(View p1) {
+					scrollView.removeAllViews();
+					scrollView.addView(mods2);
+					AddColor(t1, Color.TRANSPARENT, 0, 0, TAB_STROKE_COLOR);
+					AddColor(t2, LST_MAB, 0, 3, TAB_STROKE_COLOR);
+					AddColor(t3, Color.TRANSPARENT, 0, 0, TAB_STROKE_COLOR);
+					AddColor(t4, Color.TRANSPARENT, 0, 0, TAB_STROKE_COLOR);
+
+                }
+            });
+
+		//****************************** TAB 3 *****************************\\
+        t3 = new TextView(context);
+		t3.setLayoutParams(layoutParams);
+        t3.setText("Menu\n3");
+		t3.setGravity(17);
+        t3.setTextColor(TAB_TEXT_COLOR);
+        t3.setTextSize(TAB_TEXT_SIZE);
+		t3.setPadding(30, 15, 30, 15);
+		t3.setShadowLayer(7.0f, 0.0f, 0.0f, Color.BLACK);
+        AddColor(t3, Color.TRANSPARENT, 0, 0, TAB_STROKE_COLOR);
+        t3.setTypeface(null, 1);
+        t3.setOnClickListener(new OnClickListener(){
+
+                @Override
+                public void onClick(View p1) {
+					scrollView.removeAllViews();
+					scrollView.addView(mods3);
+					AddColor(t1, Color.TRANSPARENT, 0, 0, TAB_STROKE_COLOR);
+					AddColor(t2, Color.TRANSPARENT, 0, 0, TAB_STROKE_COLOR);
+					AddColor(t3, LST_MAB, 0, 3, TAB_STROKE_COLOR);
+					AddColor(t4, Color.TRANSPARENT, 0, 0, TAB_STROKE_COLOR);
+
+                }
+            });
+
+		//****************************** TAB 4 *****************************\\
+        t4 = new TextView(context);
+		t4.setLayoutParams(layoutParams);
+        t4.setText("Menu\n4");
+		t4.setGravity(17);
+        t4.setTextColor(TAB_TEXT_COLOR);
+        t4.setTextSize(TAB_TEXT_SIZE);
+		t4.setPadding(30, 15, 30, 15);
+		t4.setShadowLayer(7.0f, 0.0f, 0.0f, Color.BLACK);
+        AddColor(t4, Color.TRANSPARENT, 0, 0, TAB_STROKE_COLOR);
+        t4.setTypeface(null, 1);
+        t4.setOnClickListener(new OnClickListener(){
+
+                @Override
+                public void onClick(View p1) {
+					scrollView.removeAllViews();
+					scrollView.addView(mods4);
+					AddColor(t1, Color.TRANSPARENT, 0, 0, TAB_STROKE_COLOR);
+					AddColor(t2, Color.TRANSPARENT, 0, 0, TAB_STROKE_COLOR);
+					AddColor(t3, Color.TRANSPARENT, 0, 0, TAB_STROKE_COLOR);
+					AddColor(t4, LST_MAB, 0, 3, TAB_STROKE_COLOR);
+
+                }
+            });
+
 
         //********** Mod menu feature list **********
-        scrollView = new ScrollView(context);
-        //Auto size. To set size manually, change the width and height example 500, 500
+		scrollView = new ScrollView(context);
         scrlLL = new LinearLayout.LayoutParams(MATCH_PARENT, dp(MENU_HEIGHT));
         scrlLLExpanded = new LinearLayout.LayoutParams(mExpanded.getLayoutParams());
         scrlLLExpanded.weight = 1.0f;
@@ -424,403 +463,114 @@ public class Menu {
         scrollView.setBackgroundColor(MENU_FEATURE_BG_COLOR);
         mods = new LinearLayout(context);
         mods.setOrientation(LinearLayout.VERTICAL);
-		mods.setPadding(5,0,5,0);
-		
+		mods.setPadding(3, 0, 3, 0);
+
 		mods2 = new LinearLayout(context);
         mods2.setOrientation(LinearLayout.VERTICAL);
-		mods2.setPadding(5,0,5,0);
+		mods2.setPadding(3, 0, 3, 0);
 		featureList(GetFeatureList2(), mods2);
-		
+
 		mods3 = new LinearLayout(context);
         mods3.setOrientation(LinearLayout.VERTICAL);
-		mods3.setPadding(5,0,5,0);
+		mods3.setPadding(3, 0, 3, 0);
 		featureList(GetFeatureList3(), mods3);
-		
+
 		mods4 = new LinearLayout(context);
         mods4.setOrientation(LinearLayout.VERTICAL);
-		mods4.setPadding(5,0,5,0);
+		mods4.setPadding(3, 0, 3, 0);
 		featureList(GetFeatureList4(), mods4);
-		
-		mods5 = new LinearLayout(context);
-        mods5.setOrientation(LinearLayout.VERTICAL);
-		mods5.setPadding(5,0,5,0);
-		featureList(GetFeatureList5(), mods5);
-		
-		mods6 = new LinearLayout(context);
-        mods6.setOrientation(LinearLayout.VERTICAL);
-		mods6.setPadding(5,0,5,0);
-		featureList(GetFeatureList6(), mods6);
-		
-		MainGridly = new LinearLayout(context);
-		MainGridly.setOrientation(LinearLayout.VERTICAL);
-		MainGridly.setBackgroundColor(MENU_FEATURE_BG_COLOR);
-		MainGridly.setLayoutParams(new LayoutParams(MATCH_PARENT,MATCH_PARENT));
-		
-		gridbuttonhold = new LinearLayout(context);
-		gridbuttonhold.setOrientation(LinearLayout.HORIZONTAL);
-		gridbuttonhold.setGravity(Gravity.CENTER);
-		gridbuttonhold.setLayoutParams(new LayoutParams(MATCH_PARENT,WRAP_CONTENT));
-		gridbuttonhold.setPadding(0,0,0,0);
-		
-		RelativeLayout relativeLayout1 = new RelativeLayout(context);
-		relativeLayout1.setPadding(10, 5, 10, 5);
-        relativeLayout1.setVerticalGravity(ALIGN_PARENT_LEFT);
-		
-		LinearLayout TabLayout1 = new LinearLayout(context);
-		TabLayout1.setOrientation(LinearLayout.VERTICAL);
-		
-		AddColor(TabLayout1, TAB_LAYOUT_COLOR, 0, 0, 0, Color.TRANSPARENT, 30, 30, 30, 30, 30, 30, 30, 30);
-		
-		LinearLayout TabLayout11 = new LinearLayout(context);
-		TabLayout11.setOrientation(LinearLayout.HORIZONTAL);
-		TabLayout11.setPadding(35,30,35,30);
 
-		TextView Iconbt = new TextView(context);
-		Iconbt.setTextColor(TEXT_COLOR_2);
-		byte[] pmdecode = Base64.decode(Playermodsicon(), 0);
-		Bitmap icon1bitmap = BitmapFactory.decodeByteArray(pmdecode,0,pmdecode.length);
-        BitmapDrawable icon1bitmap1 = new BitmapDrawable(icon1bitmap);
-		Iconbt.setBackground(icon1bitmap1);
-		icon1bitmap1.setColorFilter(TEXT_COLOR_2, PorterDuff.Mode.SRC_ATOP);
-		
-		TextView LayoutText1 = new TextView(context);
-		LayoutText1.setGravity(Gravity.CENTER);
-		LayoutText1.setTextColor(TEXT_COLOR_2);
-		LayoutText1.setText("Player\nMods");
-		LayoutText1.setPadding(5,0,0,0);
-		//LayoutText1.setTextSize(15f);
-		LayoutText1.setTypeface(null,1);
-		
-		button = new Button(context);
-		button.setText("View");
-		button.setTextColor(TEXT_COLOR);
-		AddColor(button, BTN_COLOR, 0, 0, 0, Color.TRANSPARENT, 30, 30, 30, 30, 30, 30, 30, 30);
-		button.setOnClickListener(new OnClickListener(){
-                @Override
-                public void onClick(View v) {
-					title.setText("Player Mods");
-					title.setTypeface(null,1);
-					title.setTextSize(20.0f);
-					currenttabindex = 1;
-					Gridlayout(1, v);
-                }
-            });
-		
-		
-		relativeLayout1.addView(TabLayout1);
-		TabLayout1.addView(TabLayout11);
-		TabLayout11.addView(Iconbt);
-		TabLayout11.addView(LayoutText1);
-		TabLayout1.addView(button);
-		
-		
-		RelativeLayout relativeLayout2 = new RelativeLayout(context);
-		relativeLayout2.setPadding(10, 5, 10, 5);
-        relativeLayout2.setVerticalGravity(ALIGN_PARENT_RIGHT);
-		
-		LinearLayout TabLayout2 = new LinearLayout(context);
-		TabLayout2.setOrientation(LinearLayout.VERTICAL);
-		
-		AddColor(TabLayout2, TAB_LAYOUT_COLOR, 0, 0, 0, Color.TRANSPARENT, 30, 30, 30, 30, 30, 30, 30, 30);
-		
-		LinearLayout TabLayout22 = new LinearLayout(context);
-		TabLayout22.setOrientation(LinearLayout.HORIZONTAL);
-		TabLayout22.setPadding(30,30,30,30);
-
-		TextView Iconbt2 = new TextView(context);
-		Iconbt2.setTextColor(TEXT_COLOR_2);
-		byte[] pmdecode2 = Base64.decode(Playerabilitiesicon(), 0);
-		Bitmap icon1bitmap2 = BitmapFactory.decodeByteArray(pmdecode2,0,pmdecode2.length);
-        BitmapDrawable icon1bitmap3 = new BitmapDrawable(icon1bitmap2);
-		Iconbt2.setBackground(icon1bitmap3);
-		icon1bitmap3.setColorFilter(TEXT_COLOR_2, PorterDuff.Mode.SRC_ATOP);
-
-		TextView LayoutText2 = new TextView(context);
-		LayoutText2.setGravity(Gravity.CENTER);
-		LayoutText2.setTextColor(TEXT_COLOR_2);
-		LayoutText2.setText("Player\nAbilities");
-		LayoutText2.setPadding(5,0,0,0);
-		//LayoutText2.setTextSize(15f);
-		LayoutText2.setTypeface(null,1);
-
-		button2 = new Button(context);
-		button2.setText("View");
-		button2.setTextColor(TEXT_COLOR);
-		AddColor(button2, BTN_COLOR, 0, 0, 0, Color.TRANSPARENT, 30, 30, 30, 30, 30, 30, 30, 30);
-		button2.setOnClickListener(new OnClickListener(){
-                @Override
-                public void onClick(View v) {
-					title.setText("Player Abilities");
-					title.setTypeface(null,1);
-					title.setTextSize(20.0f);
-					currenttabindex = 2;
-					Gridlayout(2, v);
-                }
-            });
-		
-		relativeLayout2.addView(TabLayout2);
-		TabLayout2.addView(TabLayout22);
-		TabLayout22.addView(Iconbt2);
-		TabLayout22.addView(LayoutText2);
-		TabLayout2.addView(button2);
-		
-		gridbuttonhold.addView(relativeLayout1);
-		gridbuttonhold.addView(relativeLayout2);
-		
-		
-		gridbuttonhold2 = new LinearLayout(context);
-		gridbuttonhold2.setOrientation(LinearLayout.HORIZONTAL);
-		gridbuttonhold2.setGravity(Gravity.CENTER);
-		gridbuttonhold2.setLayoutParams(new LayoutParams(MATCH_PARENT,WRAP_CONTENT));
-		gridbuttonhold2.setPadding(0,0,0,0);
-
-		RelativeLayout relativeLayout3 = new RelativeLayout(context);
-        relativeLayout3.setPadding(10, 5, 10, 5);
-        relativeLayout3.setVerticalGravity(ALIGN_PARENT_LEFT);
-		
-		LinearLayout TabLayout3 = new LinearLayout(context);
-		TabLayout3.setOrientation(LinearLayout.VERTICAL);
-		AddColor(TabLayout3, TAB_LAYOUT_COLOR, 0, 0, 0, Color.TRANSPARENT, 30, 30, 30, 30, 30, 30, 30, 30);
-
-		LinearLayout TabLayout33 = new LinearLayout(context);
-		TabLayout33.setOrientation(LinearLayout.HORIZONTAL);
-		TabLayout33.setPadding(30,30,30,30);
-
-		TextView Iconbt3 = new TextView(context);
-		Iconbt3.setTextColor(TEXT_COLOR_2);
-		byte[] pmdecode3 = Base64.decode(Cameraicon(), 0);
-		Bitmap icon1bitmap4 = BitmapFactory.decodeByteArray(pmdecode3,0,pmdecode3.length);
-        BitmapDrawable icon1bitmap5 = new BitmapDrawable(icon1bitmap4);
-		Iconbt3.setBackground(icon1bitmap5);
-		icon1bitmap5.setColorFilter(TEXT_COLOR_2, PorterDuff.Mode.SRC_ATOP);
-		
-
-		TextView LayoutText3 = new TextView(context);
-		LayoutText3.setGravity(Gravity.CENTER);
-		LayoutText3.setTextColor(TEXT_COLOR_2);
-		LayoutText3.setText("Camera\nMods");
-		LayoutText3.setPadding(5,0,0,0);
-		//LayoutText3.setTextSize(15f);
-		LayoutText3.setTypeface(null,1);
-
-		button3 = new Button(getContext);
-		button3.setText("View");
-		button3.setTextColor(TEXT_COLOR);
-		AddColor(button3, BTN_COLOR, 0, 0, 0, Color.TRANSPARENT, 30, 30, 30, 30, 30, 30, 30, 30);
-		button3.setOnClickListener(new OnClickListener(){
-                @Override
-                public void onClick(View v) {
-					title.setText("Camera Mods");
-					title.setTypeface(null,1);
-					title.setTextSize(20.0f);
-					currenttabindex = 3;
-					Gridlayout(3, v);
-                }
-            });
-		
-		relativeLayout3.addView(TabLayout3);
-		TabLayout3.addView(TabLayout33);
-		TabLayout33.addView(Iconbt3);
-		TabLayout33.addView(LayoutText3);
-		TabLayout3.addView(button3);
-		
-		RelativeLayout relativeLayout4 = new RelativeLayout(context);
-        relativeLayout4.setPadding(10, 5, 10, 5);
-        relativeLayout4.setVerticalGravity(ALIGN_PARENT_RIGHT);
-
-		LinearLayout TabLayout4 = new LinearLayout(context);
-		TabLayout4.setOrientation(LinearLayout.VERTICAL);
-		AddColor(TabLayout4, TAB_LAYOUT_COLOR, 0, 0, 0, Color.TRANSPARENT, 30, 30, 30, 30, 30, 30, 30, 30);
-
-		LinearLayout TabLayout44 = new LinearLayout(context);
-		TabLayout44.setOrientation(LinearLayout.HORIZONTAL);
-		TabLayout44.setPadding(45,30,45,30);
-
-		TextView Iconbt4 = new TextView(context);
-		Iconbt4.setTextColor(TEXT_COLOR_2);
-		
-		byte[] pmdecode4 = Base64.decode(Mapmodsicon(), 0);
-		Bitmap icon1bitmap6 = BitmapFactory.decodeByteArray(pmdecode4,0,pmdecode4.length);
-        BitmapDrawable icon1bitmap7 = new BitmapDrawable(icon1bitmap6);
-		Iconbt4.setBackground(icon1bitmap7);
-		icon1bitmap7.setColorFilter(TEXT_COLOR_2, PorterDuff.Mode.SRC_ATOP);
-		
-
-		TextView LayoutText4 = new TextView(context);
-		LayoutText4.setGravity(Gravity.CENTER);
-		LayoutText4.setTextColor(TEXT_COLOR_2);
-		LayoutText4.setText("Map\nMods");
-		LayoutText4.setPadding(5,0,0,0);
-		//LayoutText4.setTextSize(15f);
-		LayoutText4.setTypeface(null,1);
-
-		button4 = new Button(getContext);
-		button4.setText("View");
-		button4.setTextColor(TEXT_COLOR);
-		AddColor(button4, BTN_COLOR, 0, 0, 0, Color.TRANSPARENT, 30, 30, 30, 30, 30, 30, 30, 30);
-        button4.setOnClickListener(new OnClickListener(){
-                @Override
-                public void onClick(View v) {
-					title.setText("Map Mods");
-					title.setTypeface(null,1);
-					title.setTextSize(20.0f);
-					currenttabindex = 4;
-					Gridlayout(4, v);
-                }
-            });
-		
-		relativeLayout4.addView(TabLayout4);
-		TabLayout4.addView(TabLayout44);
-		TabLayout44.addView(Iconbt4);
-		TabLayout44.addView(LayoutText4);
-		TabLayout4.addView(button4);
-		
-		
-		gridbuttonhold2.addView(relativeLayout3);
-        gridbuttonhold2.addView(relativeLayout4);
-		
-		
-		gridbuttonhold3 = new LinearLayout(context);
-		gridbuttonhold3.setOrientation(LinearLayout.HORIZONTAL);
-		gridbuttonhold3.setGravity(Gravity.CENTER);
-		gridbuttonhold3.setLayoutParams(new LayoutParams(MATCH_PARENT,WRAP_CONTENT));
-        gridbuttonhold3.setPadding(0,0,0,0);
-
-		RelativeLayout relativeLayout5 = new RelativeLayout(context);
-        relativeLayout5.setPadding(10, 5, 10, 5);
-        relativeLayout5.setVerticalGravity(ALIGN_PARENT_LEFT);
-
-		LinearLayout TabLayout5 = new LinearLayout(context);
-		TabLayout5.setOrientation(LinearLayout.VERTICAL);
-		AddColor(TabLayout5, TAB_LAYOUT_COLOR, 0, 0, 0, Color.TRANSPARENT, 30, 30, 30, 30, 30, 30, 30, 30);
-
-		LinearLayout TabLayout55 = new LinearLayout(context);
-		TabLayout55.setOrientation(LinearLayout.HORIZONTAL);
-		TabLayout55.setPadding(30,30,30,30);
-
-		TextView Iconbt5 = new TextView(context);
-		Iconbt5.setTextColor(TEXT_COLOR_2);
-		byte[] pmdecode5 = Base64.decode(Shoopmodsicon(), 0);
-		Bitmap icon1bitmap8 = BitmapFactory.decodeByteArray(pmdecode5,0,pmdecode5.length);
-        BitmapDrawable icon1bitmap9 = new BitmapDrawable(icon1bitmap8);
-		Iconbt5.setBackground(icon1bitmap9);
-		icon1bitmap9.setColorFilter(TEXT_COLOR_2, PorterDuff.Mode.SRC_ATOP);
-
-		
-
-		TextView LayoutText5 = new TextView(context);
-		LayoutText5.setGravity(Gravity.CENTER);
-		LayoutText5.setTextColor(TEXT_COLOR_2);
-		LayoutText5.setText("Shoping\nmods");
-		LayoutText5.setPadding(5,0,0,0);
-		//LayoutText5.setTextSize(15f);
-		LayoutText5.setTypeface(null,1);
-
-		button5 = new Button(getContext);
-		button5.setText("View");
-		button5.setTextColor(TEXT_COLOR);
-		AddColor(button5, BTN_COLOR, 0, 0, 0, Color.TRANSPARENT, 30, 30, 30, 30, 30, 30, 30, 30);
-        button5.setOnClickListener(new OnClickListener(){
-                @Override
-                public void onClick(View v) {
-					title.setText("Shoping Mods");
-					title.setTypeface(null,1);
-					title.setTextSize(20.0f);
-					currenttabindex = 5;
-					Gridlayout(5, v);
-                }
-            });
-		
-		relativeLayout5.addView(TabLayout5);
-		TabLayout5.addView(TabLayout55);
-		TabLayout55.addView(Iconbt5);
-		TabLayout55.addView(LayoutText5);
-		TabLayout5.addView(button5);
-
-		RelativeLayout relativeLayout6 = new RelativeLayout(context);
-        relativeLayout6.setPadding(10, 5, 10, 5);
-        relativeLayout6.setVerticalGravity(ALIGN_PARENT_RIGHT);
-
-		LinearLayout TabLayout6 = new LinearLayout(context);
-		TabLayout6.setOrientation(LinearLayout.VERTICAL);
-		AddColor(TabLayout6, TAB_LAYOUT_COLOR, 0, 0, 0, Color.TRANSPARENT, 30, 30, 30, 30, 30, 30, 30, 30);
-
-		LinearLayout TabLayout66 = new LinearLayout(context);
-		TabLayout66.setOrientation(LinearLayout.HORIZONTAL);
-		TabLayout66.setPadding(30,30,30,30);
-
-		TextView Iconbt6 = new TextView(context);
-		Iconbt6.setTextColor(TEXT_COLOR_2);
-		byte[] pmdecode6 = Base64.decode(Sittingsicon(), 0);
-		Bitmap icon1bitmap10 = BitmapFactory.decodeByteArray(pmdecode6,0,pmdecode6.length);
-        BitmapDrawable icon1bitmap11 = new BitmapDrawable(icon1bitmap10);
-		Iconbt6.setBackground(icon1bitmap11);
-		icon1bitmap11.setColorFilter(TEXT_COLOR_2, PorterDuff.Mode.SRC_ATOP);
-		
-
-		TextView LayoutText6 = new TextView(context);
-		LayoutText6.setGravity(Gravity.CENTER);
-		LayoutText6.setTextColor(TEXT_COLOR_2);
-		LayoutText6.setText("Settings\nView");
-		LayoutText6.setPadding(5,0,0,0);
-		//LayoutText6.setTextSize(15f);
-		LayoutText6.setTypeface(null,1);
-
-		button6 = new Button(getContext);
-		button6.setText("View");
-		button6.setTextColor(TEXT_COLOR);
-		AddColor(button6, BTN_COLOR, 0, 0, 0, Color.TRANSPARENT, 30, 30, 30, 30, 30, 30, 30, 30);
-        button6.setOnClickListener(new OnClickListener(){
-                @Override
-                public void onClick(View v) {
-					title.setText("Settings");
-					title.setTypeface(null,1);
-					title.setTextSize(20.0f);
-					currenttabindex = 6;
-					Gridlayout(6, v);
-                }
-            });
-		
-		relativeLayout6.addView(TabLayout6);
-		TabLayout6.addView(TabLayout66);
-		TabLayout66.addView(Iconbt6);
-		TabLayout66.addView(LayoutText6);
-		TabLayout6.addView(button6);
-
-
-		gridbuttonhold3.addView(relativeLayout5);
-        gridbuttonhold3.addView(relativeLayout6);
-		
-		
         //********** RelativeLayout for buttons **********
-       
-		
-		TextView textdec = new TextView(getContext);
-		textdec.setText("Lxnnyer Mod Menu || Version 1.2");
-		textdec.setGravity(Gravity.CENTER);
-		textdec.setTextSize(14f);
-		textdec.setTextColor(TEXT_COLOR);
+        RelativeLayout relativeLayout = new RelativeLayout(context);
+        relativeLayout.setPadding(0, 0, 0, 0);
+        relativeLayout.setVerticalGravity(Gravity.CENTER);
+
+        //**********  Hide/Kill button **********
+        RelativeLayout.LayoutParams lParamsHideBtn = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+        lParamsHideBtn.addRule(ALIGN_PARENT_LEFT);
+
+        hideBtn = new Button(context);
+        hideBtn.setLayoutParams(lParamsHideBtn);
+        GradientDrawable hidegd = new GradientDrawable();
+		hidegd.setColor(BTN_COLOR);
+		hidegd.setStroke(3,Color.WHITE);
+		hidegd.setCornerRadii(new float[]{0,0,30,30,0,0,0,0});
+		hideBtn.setBackground(hidegd);
+        hideBtn.setText("SETTINGS");
+        hideBtn.setTextColor(TEXT_COLOR);
+        hideBtn.setOnClickListener(new View.OnClickListener() {
+				boolean settingsOpen;
+
+                public void onClick(View view) {
+                    try {
+                        settingsOpen = !settingsOpen;
+                        if (settingsOpen) {
+                            hideBtn.setText("CLOSE");
+                            H.setVisibility(0);
+                            l.setVisibility(8);
+                            scrollView.setVisibility(8);
+                        } else {
+                            hideBtn.setText("SETTINGS");
+                            H.setVisibility(8);
+                            l.setVisibility(0);
+                            scrollView.setVisibility(0);
+                        }
+                    } catch (IllegalStateException e) {
+                    }
+                }
+			});
+
+        //********** Close button **********
+        RelativeLayout.LayoutParams lParamsCloseBtn = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+        lParamsCloseBtn.addRule(ALIGN_PARENT_RIGHT);
+
+        closeBtn = new Button(context);
+        closeBtn.setLayoutParams(lParamsCloseBtn);
+        GradientDrawable closegd = new GradientDrawable();
+		closegd.setColor(BTN_COLOR);
+		closegd.setStroke(3,Color.WHITE);
+		closegd.setCornerRadii(new float[]{30,30,0,0,0,0,0,0});
+		closeBtn.setBackground(closegd);
+        closeBtn.setText("MINIMIZE");
+        closeBtn.setTextColor(TEXT_COLOR);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                mCollapsed.setVisibility(View.VISIBLE);
+                mCollapsed.setAlpha(ICON_ALPHA);
+                mExpanded.setVisibility(View.GONE);
+            }
+        });
 
         //********** Adding view components **********
         mRootContainer.addView(mCollapsed);
         mRootContainer.addView(mExpanded);
-        if (IconWebViewData() != null) {
-            mCollapsed.addView(wView);
-        } else {
-            mCollapsed.addView(startimage);
-        }
-		titleText.addView(back);
+        mCollapsed.addView(startimage);
         titleText.addView(title);
         titleText.addView(settings);
-        mExpanded.addView(titleText);
-		scrollView.addView(mods6);
-		MainGridly.addView(relative);
-		relative.addView(textinfo);
-        MainGridly.addView(gridbuttonhold);
-		MainGridly.addView(gridbuttonhold2);
-		MainGridly.addView(gridbuttonhold3);
+        mExpanded.addView(subLayout);
+        subLayout.addView(titleText);
+        subLayout.addView(subTitle);
+        subLayout.addView(l);
+        l.addView(h);
+        l.addView(Scroll);
+        Scroll.addView(tl);
+        tl.addView(v1);
+        tl.addView(t1);
+        tl.addView(v2);
+        tl.addView(t2);
+        tl.addView(v3);
+        tl.addView(t3);
+        tl.addView(v4);
+        tl.addView(t4);
+        tl.addView(v5);
+        l.addView(h2);
+        H.addView(mSettings);
+        mExpanded.addView(H);
+        scrollView.addView(mods);
         mExpanded.addView(scrollView);
-        mExpanded.addView(textdec);
+        relativeLayout.addView(hideBtn);
+        relativeLayout.addView(closeBtn);
+        mExpanded.addView(relativeLayout);
 
         Init(context, title, subTitle);
     }
@@ -870,16 +620,16 @@ public class Menu {
     @SuppressLint("WrongConstant")
     public void SetWindowManagerActivity() {
         vmParams = new WindowManager.LayoutParams(
-			WindowManager.LayoutParams.WRAP_CONTENT,
-			WindowManager.LayoutParams.WRAP_CONTENT,
-			POS_X,//initialX
-			POS_Y,//initialy
-			WindowManager.LayoutParams.TYPE_APPLICATION,
-			WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-			WindowManager.LayoutParams.FLAG_LAYOUT_IN_OVERSCAN |
-			WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN |
-			WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
-			PixelFormat.TRANSPARENT
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                POS_X,//initialX
+                POS_Y,//initialy
+                WindowManager.LayoutParams.TYPE_APPLICATION,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_OVERSCAN |
+                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN |
+                        WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
+                PixelFormat.TRANSPARENT
         );
         vmParams.gravity = 51;
         vmParams.x = POS_X;
@@ -938,7 +688,6 @@ public class Menu {
             }
         };
     }
-	
 
     private void featureList(String[] listFT, LinearLayout linearLayout) {
         //Currently looks messy right now. Let me know if you have improvements
@@ -992,9 +741,6 @@ public class Menu {
                 case "InputText":
                     InputText(linearLayout, featNum, strSplit[1]);
                     break;
-				case "InputText2":
-                    InputText2(linearLayout, featNum, strSplit[1]);
-                    break;
                 case "InputValue":
                     if (strSplit.length == 3)
                         InputNum(linearLayout, featNum, strSplit[2], Integer.parseInt(strSplit[1]));
@@ -1033,54 +779,54 @@ public class Menu {
 
     private void Switch(LinearLayout linLayout, final int featNum, final String featName, boolean swiOn) {
         final Switch switchR = new Switch(getContext);
-       final GradientDrawable THUMB = new GradientDrawable();
-		THUMB.setShape(1);
-		THUMB.setSize(40,40);
-		
-		final GradientDrawable TRACK = new GradientDrawable();
-		TRACK.setCornerRadius(100);
-		TRACK.setSize(20,20);
-		
-		boolean isOn = Preferences.loadPrefBool(featName, featNum, swiOn);
-		if(isOn){
-			THUMB.setColor(BTN_COLOR);
-			THUMB.setStroke(2,BTN_COLOR);
-			
-			TRACK.setColor(Color.parseColor("#AB143568"));
-			TRACK.setStroke(2, BTN_COLOR);
-		}
-		else{
-			THUMB.setColor(Color.WHITE);
-			THUMB.setStroke(2,BTN_COLOR);
+        
 
-			TRACK.setColor(Color.argb(200,255,255,255));
-			TRACK.setStroke(2, BTN_COLOR);
-		}
-		
+        final GradientDrawable GD_TRACK = new  GradientDrawable();
+        GD_TRACK.setSize(20, 20);
+        GD_TRACK.setCornerRadius(100);
+
+        final GradientDrawable GD_THUMB = new  GradientDrawable();
+        GD_THUMB.setSize(40, 40);
+        GD_THUMB.setShape(1);
+		boolean isOn = Preferences.loadPrefBool(featName, featNum, swiOn);
+
+        if (isOn) {
+            GD_TRACK.setStroke(2, Color.WHITE);
+			GD_TRACK.setColor(LST_MAB);
+
+			GD_THUMB.setStroke(2, Color.WHITE);
+			GD_THUMB.setColor(Color.RED);
+		} else {
+			GD_TRACK.setStroke(2, Color.RED);
+			GD_TRACK.setColor(Color.argb(200, 255, 255, 255));
+
+			GD_THUMB.setStroke(2, Color.RED);
+			GD_THUMB.setColor(Color.WHITE);
+        }
         switchR.setText(featName);
         switchR.setTextColor(TEXT_COLOR_2);
-		switchR.setThumbDrawable(THUMB);
-		switchR.setTrackDrawable(TRACK);
-        switchR.setPadding(10, 5, 0, 5);
+        switchR.setShadowLayer(7.0f, 0.0f, 0.0f, Color.BLACK);
+        switchR.setPadding(10, 5, 10, 5);
+		switchR.setThumbDrawable(GD_THUMB);
+        switchR.setTrackDrawable(GD_TRACK);
         switchR.setChecked(Preferences.loadPrefBool(featName, featNum, swiOn));
         switchR.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton compoundButton, boolean bool) {
                 Preferences.changeFeatureBool(featName, featNum, bool);
-                if(bool){
-					THUMB.setColor(BTN_COLOR);
-					THUMB.setStroke(2,BTN_COLOR);
+				if (bool) {
+					GD_TRACK.setStroke(2, Color.WHITE);
+					GD_TRACK.setColor(LST_MAB);
 
-					TRACK.setColor(Color.parseColor("#AB143568"));
-					TRACK.setStroke(2, BTN_COLOR);
-				}
-				else{
-					THUMB.setColor(Color.WHITE);
-					THUMB.setStroke(2,BTN_COLOR);
+					GD_THUMB.setStroke(2, Color.WHITE);
+					GD_THUMB.setColor(Color.RED);
+				} else {
+					GD_TRACK.setStroke(2, Color.RED);
+					GD_TRACK.setColor(Color.argb(200, 255, 255, 255));
 
-					TRACK.setColor(Color.argb(200,255,255,255));
-					TRACK.setStroke(2, BTN_COLOR);
+					GD_THUMB.setStroke(2, Color.RED);
+					GD_THUMB.setColor(Color.WHITE);
 				}
-				switch (featNum) {
+                switch (featNum) {
                     case -1: //Save perferences
                         Preferences.with(switchR.getContext()).writeBoolean(-1, bool);
                         if (bool == false)
@@ -1090,7 +836,37 @@ public class Menu {
                         Preferences.isExpanded = bool;
                         scrollView.setLayoutParams(bool ? scrlLLExpanded : scrlLL);
                         break;
-					
+					case -6:
+						if(bool){
+                            mExpanded.setBackground(null);
+                            GradientDrawable gdMenuBody = new GradientDrawable();
+
+                            gdMenuBody.setColor(LST_MAB); //Set background color
+                            gdMenuBody.setStroke(4, Color.WHITE); //Set border
+                            mExpanded.setBackground(gdMenuBody); //Apply GradientDrawable to it
+
+                        }
+                        else{
+                            mExpanded.setBackground(LxnnyerModMenu);
+
+                        }
+                        break;
+
+					case -7:
+                        if(bool){
+                            mExpanded.setBackground(null);
+                            GradientDrawable gdMenuBody = new GradientDrawable();
+
+                            gdMenuBody.setColor(Color.parseColor("#AB000000")); //Set background color
+                            gdMenuBody.setStroke(4, Color.WHITE); //Set border
+                            mExpanded.setBackground(gdMenuBody); //Apply GradientDrawable to it
+
+                        }
+                        else{
+                            mExpanded.setBackground(LxnnyerModMenu);
+
+                        }
+                        break;
                 }
             }
         });
@@ -1105,15 +881,13 @@ public class Menu {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setGravity(Gravity.CENTER);
 
-        final TextView textView = new TextView(getContext);
-		if(Preferences.loadPref){
-			textView.setText(Html.fromHtml(featName + " -> <font color='" + NumberTxtColor + "'>" + loadedProg + "[SAVED VALUE]"));
-		}
-		else{
-			textView.setText(Html.fromHtml(featName + " -> <font color='" + NumberTxtColor + "'>"  + "[DEFAULT]"));
+		final TextView textView = new TextView(getContext);
+		if (Preferences.loadPref) {
+            textView.setText(Html.fromHtml(featName + " -> "+"<font color='" + Color.WHITE + "'>" + loadedProg +" (SAVED VALUE)"));
+		} else{
+			textView.setText(Html.fromHtml(featName + " -> " + "<font color='" + Color.WHITE + "'>" +" [DEFAULT]"));
 		}
         textView.setTextColor(TEXT_COLOR_2);
-		textView.setPadding(5,0,0,0);
 
         SeekBar seekBar = new SeekBar(getContext);
         seekBar.setPadding(25, 10, 35, 10);
@@ -1121,39 +895,73 @@ public class Menu {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             seekBar.setMin(min); //setMin for Oreo and above
         seekBar.setProgress((loadedProg == 0) ? min : loadedProg);
-		seekBar.getThumb().setColorFilter(SeekBarColor, PorterDuff.Mode.SRC_ATOP);
+        GradientDrawable seekbarCircle = new GradientDrawable();
+        seekbarCircle.setShape(1);
+        seekbarCircle.setColor(SeekBarColor);
+        seekbarCircle.setStroke(dp(2), Color.WHITE);
+        seekbarCircle.setCornerRadius(15.0f);
+        seekbarCircle.setSize(dp(18), dp(18));
+        seekBar.setThumb(seekbarCircle);
         seekBar.getProgressDrawable().setColorFilter(SeekBarProgressColor, PorterDuff.Mode.SRC_ATOP);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+
             public void onProgressChanged(SeekBar seekBar, int i, boolean z) {
-                if(i > min){
+                //if progress is greater than minimum, don't go below. Else, set progress
+				if (i > min) {
 					seekBar.setProgress(i < min ? min : i);
 					Preferences.changeFeatureInt(featName, featNum, i < min ? min : i);
-					textView.setText(Html.fromHtml(featName + " -> <font color='" + NumberTxtColor + "'>" + (i < min ? min : i) + "x"));
-				}
-				else{
+					textView.setText(Html.fromHtml(featName + " -> <font color='" + NumberTxtColor + "'>" + (i < min ? min : i)));
+				} else {                   
+
 					seekBar.setProgress(i < min ? min : i);
 					Preferences.changeFeatureInt(featName, featNum, i < min ? min : i);
-					textView.setText(Html.fromHtml(featName + " -> <font color='" + NumberTxtColor + "'>" + "[DEFAULT]"));
+					textView.setText(Html.fromHtml(featName + " -> <font color='" + NumberTxtColor + "'>" + " [DEFAULT]"));		
+
 				}
-				
-				switch(featNum){
-					case -3:
+				switch (featNum){
+					case -8:
+						textView.setText(Html.fromHtml(featName + " -> " + (i - 0) + "X"));
 						ICON_ALPHA = (i + 1) / 10.0F;
 						if (i == 10)
 							textView.setText(Html.fromHtml(featName + "-> <font color='" + NumberTxtColor + "'>" + "[DEFAULT]"));
 						if (i == min)
 							ICON_ALPHA = 1.0F;
-						break;               
-					case -4:
+						switch(i){
+							case 1:
+								textView.setText(Html.fromHtml(featName + " -> <font color='" + NumberTxtColor + "'>" + " [DEFAULT]"));
+								break;
+							case 9:
+								textView.setText(Html.fromHtml(featName + "-> <font color='" + NumberTxtColor + "'>" + "[INFINITY]"));
+
+								break;
+
+						}
+						break; 
+					case -9:
+						textView.setText(Html.fromHtml(featName + " -> " + (i - 0) + "X"));
 						startimage.getLayoutParams().height = (i + 13) * 5;
 						startimage.getLayoutParams().width = (i + 13) * 5;
 						if (i == 13)
 							textView.setText(Html.fromHtml(featName + "-> <font color='" + NumberTxtColor + "'>" + "[DEFAULT]"));
+						switch(i){
+							case 1:
+								textView.setText(Html.fromHtml(featName + " -> <font color='" + NumberTxtColor + "'>" + " [DEFAULT]"));
+								break;
+							case 99:
+								textView.setText(Html.fromHtml(featName + "-> <font color='" + NumberTxtColor + "'>" + "[INFINITY]"));
+
+								break;
+
+						}
 						break;
 
-					case -5:
+					case -10:
+						textView.setText(Html.fromHtml(featName + " -> " + (i - 0) + "X"));
 						if(i >= 1){
 							RotateAnimation rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 							int speed = i > 10  ? ((i - 10) * 1000) : i * 100; 
@@ -1164,51 +972,17 @@ public class Menu {
 						}else{
 							startimage.clearAnimation();
 						}
-						break;
-						
-					case 25:
-						switch (i){
+						switch(i){
 							case 0:
-								textView.setText(Html.fromHtml(featName + "-> <font color='" + NumberTxtColor + "'>" + "OFF"));
-								MyToast(getContext, "OFF");
+								textView.setText(Html.fromHtml(featName + " -> <font color='" + NumberTxtColor + "'>" + " [DEFAULT]"));
 								break;
-							case 1:
-								textView.setText(Html.fromHtml(featName + "-> <font color='" + NumberTxtColor + "'>" + "All Textcher"));
-								MyToast(getContext, "All Textcher");
+							case 20:
+								textView.setText(Html.fromHtml(featName + "-> <font color='" + NumberTxtColor + "'>" + "[INFINITY]"));
+
 								break;
 
-							case 2:
-								textView.setText(Html.fromHtml(featName + "-> <font color='" + NumberTxtColor + "'>" + "Characters Only"));
-								MyToast(getContext, "Characters Only");
-								break;
-
-							case 3:
-								textView.setText(Html.fromHtml(featName + "-> <font color='" + NumberTxtColor + "'>" + "Train Only"));
-								MyToast(getContext, "Train Only");
-								break;
-							case 4:
-								textView.setText(Html.fromHtml(featName + "-> <font color='" + NumberTxtColor + "'>" + "Lane Only"));
-								MyToast(getContext, "Lane Only");
-								break;
 						}
 						break;
-						case 32:
-							switch(i){
-								case 12:
-								textView.setText(Html.fromHtml(featName + "-> <font color='" + NumberTxtColor + "'>" + "MAX"));
-								MyToast(getContext, "MAX");
-									break;
-							}
-							break;
-						/*case 5:
-						//if (i >= 1 && i <= 9) {
-							textView.setText(Html.fromHtml(featName + " -> " + String.format("%f", i * 0.123456) + "x"));
-						} else if (i >= 10) {
-							textView.setText(Html.fromHtml(featName + " -> " + (i - 9) + "x"));
-						}
-						break;*/
-						
-					
 				}
             }
         });
@@ -1223,35 +997,37 @@ public class Menu {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         layoutParams.setMargins(7, 5, 7, 5);
         button.setLayoutParams(layoutParams);
-        button.setTextColor(TEXT_COLOR);
+        button.setTextColor(TEXT_COLOR_2);
         button.setAllCaps(false); //Disable caps to support html
         button.setText(Html.fromHtml(featName));
-        AddColor(button, BTN_COLOR, 0, 0, 0, Color.TRANSPARENT, 30, 30, 0, 0, 30, 30, 0, 0);
+        GradientDrawable buttongd = new GradientDrawable();
+		buttongd.setColor(BTN_COLOR);
+		buttongd.setStroke(3,Color.WHITE);
+		buttongd.setCornerRadii(new float[]{30,30,0,0,30,30,0,0});
+        button.setBackground(buttongd);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 switch (featNum) {
 
-                    case -6:
+                    case -12:
+
+						Toast.makeText(getContext, "Menu killed", Toast.LENGTH_LONG).show();
+						rootFrame.removeView(mRootContainer);
+						mWindowManager.removeView(rootFrame);
+                        break;
+					case -11:
 						mCollapsed.setVisibility(View.VISIBLE);
 						mCollapsed.setAlpha(0);
 						mExpanded.setVisibility(View.GONE);
-						MyToast(getContext, "[Icon hidden. Remember the hidden icon position]");
+						Toast.makeText(getContext, "Icon hidden. Remember the hidden icon position", Toast.LENGTH_LONG).show();
+
 						break;
-						
-					case -7:
-						rootFrame.removeView(mRootContainer);
-						mWindowManager.removeView(rootFrame);
-						MyToast(getContext, "Mod Menu is Killed");
-						break;
-				
                     case -100:
                         stopChecking = true;
                         break;
                 }
                 Preferences.changeFeatureInt(featName, featNum, 0);
             }
-
-			
         });
 
         linLayout.addView(button);
@@ -1263,9 +1039,13 @@ public class Menu {
         layoutParams.setMargins(7, 5, 7, 5);
         button.setLayoutParams(layoutParams);
         button.setAllCaps(false); //Disable caps to support html
-        button.setTextColor(TEXT_COLOR);
+        button.setTextColor(TEXT_COLOR_2);
         button.setText(Html.fromHtml(featName));
-        AddColor(button, BTN_COLOR, 0, 0, 0, Color.TRANSPARENT, 30, 30, 0, 0, 30, 30, 0, 0);
+		GradientDrawable buttonlinkgd = new GradientDrawable();
+		buttonlinkgd.setColor(BTN_COLOR);
+		buttonlinkgd.setStroke(3,Color.WHITE);
+		buttonlinkgd.setCornerRadii(new float[]{30,30,0,0,30,30,0,0});
+        button.setBackground(buttonlinkgd);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -1282,18 +1062,26 @@ public class Menu {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         layoutParams.setMargins(7, 5, 7, 5);
         button.setLayoutParams(layoutParams);
-        button.setTextColor(TEXT_COLOR);
+        button.setTextColor(TEXT_COLOR_2);
         button.setAllCaps(false); //Disable caps to support html
 
         final String finalfeatName = featName.replace("OnOff_", "");
         boolean isOn = Preferences.loadPrefBool(featName, featNum, switchedOn);
         if (isOn) {
             button.setText(Html.fromHtml(finalfeatName + ": ON"));
-            AddColor(button, BTN_COLOR, 0, 0, 0, Color.TRANSPARENT, 30, 30, 0, 0, 30, 30, 0, 0);
+            GradientDrawable buttonongd = new GradientDrawable();
+			buttonongd.setColor(LST_MAB);
+			buttonongd.setStroke(3,Color.WHITE);
+			buttonongd.setCornerRadii(new float[]{30,30,0,0,30,30,0,0});
+			button.setBackground(buttonongd);
             isOn = false;
         } else {
             button.setText(Html.fromHtml(finalfeatName + ": OFF"));
-            AddColor(button, BTN_COLOR, 3, 3, 3, Color.TRANSPARENT, 30, 30, 0, 0, 30, 30, 0, 0);
+            GradientDrawable buttonoffgd = new GradientDrawable();
+			buttonoffgd.setColor(BTN_COLOR);
+			buttonoffgd.setStroke(3,Color.WHITE,4,4);
+			buttonoffgd.setCornerRadii(new float[]{30,30,0,0,30,30,0,0});
+			button.setBackground(buttonoffgd);
             isOn = true;
         }
         final boolean finalIsOn = isOn;
@@ -1305,11 +1093,19 @@ public class Menu {
                 //Log.d(TAG, finalfeatName + " " + featNum + " " + isActive2);
                 if (isOn) {
                     button.setText(Html.fromHtml(finalfeatName + ": ON"));
-                    AddColor(button, BTN_COLOR, 0, 0, 0, Color.TRANSPARENT, 30, 30, 0, 0, 30, 30, 0, 0);
+                    GradientDrawable buttonongd = new GradientDrawable();
+					buttonongd.setColor(LST_MAB);
+					buttonongd.setStroke(3,Color.WHITE);
+					buttonongd.setCornerRadii(new float[]{30,30,0,0,30,30,0,0});
+					button.setBackground(buttonongd);
                     isOn = false;
                 } else {
                     button.setText(Html.fromHtml(finalfeatName + ": OFF"));
-                    AddColor(button, BTN_COLOR, 3, 3 , 3, Color.TRANSPARENT, 30, 30, 0, 0, 30, 30, 0, 0);
+                    GradientDrawable buttonoffgd = new GradientDrawable();
+					buttonoffgd.setColor(BTN_COLOR);
+					buttonoffgd.setStroke(3,Color.WHITE,4,4);
+					buttonoffgd.setCornerRadii(new float[]{30,30,0,0,30,30,0,0});
+					button.setBackground(buttonoffgd);
                     isOn = true;
                 }
             }
@@ -1327,8 +1123,11 @@ public class Menu {
         LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
         layoutParams2.setMargins(7, 2, 7, 2);
         linearLayout2.setOrientation(LinearLayout.VERTICAL);
-		
-        AddColor(linearLayout2, Color.TRANSPARENT, 3, 0, 0,BTN_COLOR , 30, 30, 0, 0, 30, 30, 0, 0);
+        GradientDrawable spinnergd = new GradientDrawable();
+		spinnergd.setColor(LST_MAB);
+		spinnergd.setStroke(3,Color.WHITE);
+		spinnergd.setCornerRadii(new float[]{30,30,0,0,30,30,0,0});
+        linearLayout2.setBackground(spinnergd);
         linearLayout2.setLayoutParams(layoutParams2);
 
         final Spinner spinner = new Spinner(getContext, Spinner.MODE_DROPDOWN);
@@ -1354,10 +1153,10 @@ public class Menu {
         linearLayout2.addView(spinner);
         linLayout.addView(linearLayout2);
     }
-	
-	
-	private void InputText2(LinearLayout linLayout, final int featNum, final String featName) {
-		final EditTextString edittextstring = new EditTextString();
+
+    private void InputNum(LinearLayout linLayout, final int featNum, final String featName, final int maxValue) {
+		final EditTextNum edittextnum = new EditTextNum();
+
         LinearLayout linearLayout = new LinearLayout(getContext);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         layoutParams.setMargins(15, 10, 15, 10);
@@ -1365,185 +1164,12 @@ public class Menu {
 		linearLayout.setGravity(16);
 		linearLayout.setPadding(10, 8, 8, 8);
 
-		GradientDrawable Inputtextgd = new GradientDrawable();
-		Inputtextgd.setStroke(3,BTN_COLOR);
-		Inputtextgd.setCornerRadii(new float[]{30, 30, 0, 0, 30, 30, 0, 0});
-		linearLayout.setBackground(Inputtextgd);
+		GradientDrawable InputNumgd = new GradientDrawable();
+		InputNumgd.setStroke(3,Color.WHITE);
+		InputNumgd.setCornerRadii(new float[]{30, 30, 0, 0, 30, 30, 0, 0});
+		linearLayout.setBackground(InputNumgd);
 		linearLayout.setLayoutParams(layoutParams);
 
-		LayoutParams lp = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-        lp.weight = 1.0f;
-
-		LinearLayout linearLayout2 = new LinearLayout(getContext);
-		linearLayout2.setLayoutParams(lp);
-		linearLayout2.setOrientation(1);
-		linearLayout2.setGravity(Gravity.CENTER);
-
-		TextView textView = new TextView(getContext);
-		textView.setTextColor(TEXT_COLOR_2);
-		textView.setText(featName);
-		textView.setTextSize(14.0F);
-		textView.setGravity(3);
-		textView.setSingleLine(true);
-		textView.setPadding(5, 0, 0, 0);
-
-		final TextView textView2 = new TextView(getContext);
-        String string = Preferences.loadPrefString(featName, featNum);
-        edittextstring.setString((string == "") ? "" : string);
-        textView2.setText(Html.fromHtml("-> " + "<font color='" + NumberTxtColor + "'>" + "[DEFAULT]" + "</font>"));
-
-		textView2.setTextColor(TEXT_COLOR_2);
-		textView2.setTextSize(14.0F);
-		textView2.setGravity(3);
-		textView2.setPadding(5, 0, 0, 0);
-
-        final Button button = new Button(getContext);
-        button.setText("ENTER");
-        GradientDrawable enter = new GradientDrawable();
-		enter.setColor(BTN_COLOR);
-		enter.setStroke(3,Color.WHITE);
-		enter.setCornerRadii(new float[]{30, 30, 0, 0, 30, 30, 0, 0});
-
-		button.setBackground(enter);
-        button.setTextColor(TEXT_COLOR);
-
-        button.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					final AlertDialog alert = new AlertDialog.Builder(getContext, 2).create();
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-						Objects.requireNonNull(alert.getWindow()).setType(Build.VERSION.SDK_INT >= 26 ? 2038 : 2002);
-					}
-					alert.setOnCancelListener(new DialogInterface.OnCancelListener() {
-							public void onCancel(DialogInterface dialog) {
-								InputMethodManager imm = (InputMethodManager) getContext.getSystemService(getContext.INPUT_METHOD_SERVICE);
-								imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-							}
-						});
-
-					//LinearLayout
-					LinearLayout linearLayout1 = new LinearLayout(getContext);
-					linearLayout1.setPadding(5, 5, 5, 5);
-					linearLayout1.setOrientation(LinearLayout.VERTICAL);
-
-					GradientDrawable box = new GradientDrawable();
-					box.setColor(BTN_COLOR);
-					box.setStroke(4,Color.WHITE,4,4);
-					linearLayout1.setBackground(box);
-					linearLayout1.setElevation(5.0F);
-
-					//TextView
-					final TextView titleText = new TextView(getContext);
-					titleText.setText(Html.fromHtml(new StringBuffer().append(new StringBuffer().append("<u>").append(featName).toString()).append("</u>").toString()));		
-					titleText.setGravity(17);
-					titleText.setTypeface(Typeface.DEFAULT_BOLD);
-					titleText.setTextColor(TEXT_COLOR);
-					titleText.setTextSize(22f);
-
-					//TextView
-					final TextView TextViewNote = new TextView(getContext);
-					TextViewNote.setGravity(17);
-					TextViewNote.setTextSize(14.0F);
-					TextViewNote.setText("Click \"Set Value\" button to apply changes || outside to cancel");
-					TextViewNote.setPadding(10, 15, 10, 10);
-					TextViewNote.setTextColor(TEXT_COLOR);
-
-					LayoutParams lpl = new LayoutParams(MATCH_PARENT, WRAP_CONTENT);
-					lpl.weight = 1;
-
-					//Edit text
-					final EditText edittext = new EditText(getContext);
-					edittext.setLayoutParams(lpl);
-					edittext.setMaxLines(1);
-					edittext.setHint("Enter key");
-					edittext.setWidth(convertDipToPixels(300));
-					edittext.setTextColor(TEXT_COLOR);
-					edittext.setText(edittextstring.getString());
-					edittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-							@Override
-							public void onFocusChange(View v, boolean hasFocus) {
-								InputMethodManager imm = (InputMethodManager) getContext.getSystemService(getContext.INPUT_METHOD_SERVICE);
-								if (hasFocus) {
-									imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-								} else {
-									imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-								}
-							}
-						});
-					edittext.requestFocus();
-
-					//Button
-					LayoutParams layoutParams = new LayoutParams(MATCH_PARENT, WRAP_CONTENT);
-					layoutParams.setMargins(20, 10, 20, 15);
-
-					Button btndialog = new Button(getContext);
-					btndialog.setLayoutParams(layoutParams);
-					GradientDrawable setvalue = new GradientDrawable();
-					setvalue.setColor(BTN_COLOR);
-
-					setvalue.setCornerRadii(new float[]{30, 30, 0, 0, 30, 30, 0, 0});
-					setvalue.setStroke(3,Color.WHITE);
-					btndialog.setBackground(setvalue);
-					btndialog.setTextColor(TEXT_COLOR);
-					btndialog.setPadding(15,10,15,10);
-					btndialog.setText("SET VALUE");
-					btndialog.setOnClickListener(new View.OnClickListener() {
-							@Override
-							public void onClick(View view) {
-
-								final String enteredPassword = edittext.getText().toString();
-
-                                //if (enteredPassword.equals (new String(Base64.decode("MjAyMw", 0)))) {                         
-                                if (enteredPassword.equals (new String(Base64.decode("ejQzSENSZGM0OTU3bnJlcjg4MW9pams=", 0)))) {                         
-                                    scrollView.removeView(mods6);
-                                    scrollView.addView(MainGridly);
-
-
-                                    MyToast(getContext, "Login");
-
-                                } else {
-
-                                    MyToast(getContext, "Error");
-
-                                }
-
-
-
-								String str = edittext.getText().toString();
-								edittextstring.setString(edittext.getText().toString());
-								textView2.setText(Html.fromHtml("-> " + "<font color='" + NumberTxtColor + "'>" + str + "</font>"));
-								alert.dismiss();
-								Preferences.changeFeatureString(featName, featNum, str);
-								edittext.setFocusable(false);
-							}
-						});
-					linearLayout1.addView(titleText);
-					linearLayout1.addView(TextViewNote);
-					linearLayout1.addView(edittext);
-					linearLayout1.addView(btndialog);
-					alert.setView(linearLayout1);
-					alert.show();
-				}
-			});
-
-		linearLayout.addView(linearLayout2);
-		linearLayout2.addView(textView);
-        linearLayout2.addView(textView2);
-        linearLayout.addView(button);
-
-		linLayout.addView(linearLayout);
-    }
-
-    private void InputNum(LinearLayout linLayout, final int featNum, final String featName, final int maxValue) {
-        final EditTextNum edittextnum = new EditTextNum();
-		LinearLayout linearLayout = new LinearLayout(getContext);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        layoutParams.setMargins(15, 10, 15, 10);
-		linearLayout.setPadding(10,8,8,8);
-		linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-		linearLayout.setLayoutParams(layoutParams);
-		AddColor(linearLayout, Color.TRANSPARENT, 3, 0, 0, BTN_COLOR, 30, 30, 0, 0, 30, 30, 0, 0);
-		
 		LayoutParams lp = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         lp.weight = 1.0f;
 
@@ -1562,17 +1188,22 @@ public class Menu {
 		final TextView textView2 = new TextView(getContext);
 		int num = Preferences.loadPrefInt(featName, featNum);
 		edittextnum.setNum((num == 0) ? 1 : num);
-		textView2.setText(Html.fromHtml(" -> <font color='" + NumberTxtColor + "'>" + "DEFAULT" + "</font>"));;
-        textView2.setTextColor(TEXT_COLOR_2);
+		textView2.setText(Html.fromHtml("-> " + "<font color='" + NumberTxtColor + "'>" + ((num == 0) ? 1 : num) + "</font>"));
+        textView2.setTextColor(Color.WHITE);
 		textView2.setTextSize(14.0F);
 		textView2.setGravity(3);
 		textView2.setPadding(5, 0, 0, 0);
 
         final Button button = new Button(getContext);
-        button.setAllCaps(false);
         button.setText("ENTER");
-        AddColor(button, BTN_COLOR, 0, 0, 0, Color.TRANSPARENT, 30, 30, 0, 0, 30, 30, 0, 0);
-        button.setTextColor(TEXT_COLOR);
+        GradientDrawable enter1 = new GradientDrawable();
+		enter1.setColor(BTN_COLOR);
+		enter1.setStroke(3,Color.WHITE);
+		enter1.setCornerRadii(new float[]{30, 30, 0, 0, 30, 30, 0, 0});
+
+		button.setBackground(enter1);
+        button.setTextColor(TEXT_COLOR_2);
+
         button.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
@@ -1591,8 +1222,10 @@ public class Menu {
 					LinearLayout linearLayout1 = new LinearLayout(getContext);
 					linearLayout1.setPadding(5, 5, 5, 5);
 					linearLayout1.setOrientation(LinearLayout.VERTICAL);
-					AddColor(linearLayout1, BTN_COLOR, 3, 0, 0, Color.WHITE, 0, 0, 0, 0, 0, 0, 0, 0);
-					
+					GradientDrawable box2 = new GradientDrawable();
+					box2.setColor(LST_MAB);
+					box2.setStroke(4,Color.WHITE,4,4);
+					linearLayout1.setBackground(box2);
 					linearLayout1.setElevation(5.0F);
 
 					//TextView
@@ -1661,8 +1294,13 @@ public class Menu {
 
 					Button btndialog = new Button(getContext);
 					btndialog.setLayoutParams(layoutParams);
-					AddColor(btndialog, BTN_COLOR, 3, 0, 0, Color.WHITE, 30, 30, 0, 0, 30, 30, 0, 0);
-					btndialog.setTextColor(TEXT_COLOR);
+					GradientDrawable setvalue2 = new GradientDrawable();
+					setvalue2.setColor(BTN_COLOR);
+
+					setvalue2.setCornerRadii(new float[]{30, 30, 0, 0, 30, 30, 0, 0});
+					setvalue2.setStroke(3,Color.WHITE);
+					btndialog.setBackground(setvalue2);
+					btndialog.setTextColor(TEXT_COLOR_2);
 					btndialog.setPadding(15,10,15,10);
 					btndialog.setText("SET VALUE");
 					btndialog.setOnClickListener(new View.OnClickListener() {
@@ -1692,7 +1330,7 @@ public class Menu {
 				}
 			});
 
-        linearLayout.addView(linearLayout2);
+		linearLayout.addView(linearLayout2);
 		linearLayout2.addView(textView);
         linearLayout2.addView(textView2);
         linearLayout.addView(button);
@@ -1701,15 +1339,20 @@ public class Menu {
     }
 
     private void InputText(LinearLayout linLayout, final int featNum, final String featName) {
-        final EditTextString edittextstring = new EditTextString();
-		LinearLayout linearLayout = new LinearLayout(getContext);
+		final EditTextString edittextstring = new EditTextString();
+        LinearLayout linearLayout = new LinearLayout(getContext);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         layoutParams.setMargins(15, 10, 15, 10);
-		linearLayout.setPadding(10,8,8,8);
-		linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+		linearLayout.setOrientation(0);
+		linearLayout.setGravity(16);
+		linearLayout.setPadding(10, 8, 8, 8);
+
+		GradientDrawable Inputtextgd = new GradientDrawable();
+		Inputtextgd.setStroke(3,Color.WHITE);
+		Inputtextgd.setCornerRadii(new float[]{30, 30, 0, 0, 30, 30, 0, 0});
+		linearLayout.setBackground(Inputtextgd);
 		linearLayout.setLayoutParams(layoutParams);
-		AddColor(linearLayout, Color.TRANSPARENT, 3, 0, 0, BTN_COLOR, 30, 30, 0, 0, 30, 30, 0, 0);
-		
+
 		LayoutParams lp = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         lp.weight = 1.0f;
 
@@ -1729,18 +1372,23 @@ public class Menu {
 		final TextView textView2 = new TextView(getContext);
         String string = Preferences.loadPrefString(featName, featNum);
         edittextstring.setString((string == "") ? "" : string);
-        textView2.setText(Html.fromHtml("-> " + "<font color='" + NumberTxtColor + "'>" + "DEFAULT" + "</font>"));
+        textView2.setText(Html.fromHtml("-> " + "<font color='" + NumberTxtColor + "'>" + string + "</font>"));
 
-		textView2.setTextColor(TEXT_COLOR_2);
+		textView2.setTextColor(Color.WHITE);
 		textView2.setTextSize(14.0F);
 		textView2.setGravity(3);
 		textView2.setPadding(5, 0, 0, 0);
 
         final Button button = new Button(getContext);
-        button.setAllCaps(false);
         button.setText("ENTER");
-        AddColor(button, BTN_COLOR, 0, 0, 0, Color.TRANSPARENT, 30, 30, 0, 0, 30, 30, 0, 0);
-        button.setTextColor(TEXT_COLOR);
+        GradientDrawable enter = new GradientDrawable();
+		enter.setColor(BTN_COLOR);
+		enter.setStroke(3,Color.WHITE);
+		enter.setCornerRadii(new float[]{30, 30, 0, 0, 30, 30, 0, 0});
+
+		button.setBackground(enter);
+        button.setTextColor(TEXT_COLOR_2);
+
         button.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
@@ -1760,7 +1408,10 @@ public class Menu {
 					linearLayout1.setPadding(5, 5, 5, 5);
 					linearLayout1.setOrientation(LinearLayout.VERTICAL);
 
-					AddColor(linearLayout1, BTN_COLOR, 3, 0, 0, Color.WHITE, 0, 0, 0, 0, 0, 0, 0, 0);
+					GradientDrawable box = new GradientDrawable();
+					box.setColor(LST_MAB);
+					box.setStroke(4,Color.WHITE,4,4);
+					linearLayout1.setBackground(box);
 					linearLayout1.setElevation(5.0F);
 
 					//TextView
@@ -1788,7 +1439,7 @@ public class Menu {
 					edittext.setMaxLines(1);
 					edittext.setHint("Write Text");
 					edittext.setWidth(convertDipToPixels(300));
-					edittext.setTextColor(TEXT_COLOR);
+					edittext.setTextColor(TEXT_COLOR_2);
 					edittext.setText(edittextstring.getString());
 					edittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 							@Override
@@ -1809,8 +1460,13 @@ public class Menu {
 
 					Button btndialog = new Button(getContext);
 					btndialog.setLayoutParams(layoutParams);
-					AddColor(btndialog, BTN_COLOR, 3, 0, 0, Color.WHITE, 30, 30, 0, 0, 30, 30, 0, 0);
-					btndialog.setTextColor(TEXT_COLOR);
+					GradientDrawable setvalue = new GradientDrawable();
+					setvalue.setColor(BTN_COLOR);
+
+					setvalue.setCornerRadii(new float[]{30, 30, 0, 0, 30, 30, 0, 0});
+					setvalue.setStroke(3,Color.WHITE);
+					btndialog.setBackground(setvalue);
+					btndialog.setTextColor(TEXT_COLOR_2);
 					btndialog.setPadding(15,10,15,10);
 					btndialog.setText("SET VALUE");
 					btndialog.setOnClickListener(new View.OnClickListener() {
@@ -1833,7 +1489,7 @@ public class Menu {
 				}
 			});
 
-        linearLayout.addView(linearLayout2);
+		linearLayout.addView(linearLayout2);
 		linearLayout2.addView(textView);
         linearLayout2.addView(textView2);
         linearLayout.addView(button);
@@ -1885,7 +1541,7 @@ public class Menu {
             };
             System.out.println(lists.get(i));
             Radioo.setText(lists.get(i));
-            Radioo.setTextColor(TEXT_COLOR_2);
+            Radioo.setTextColor(Color.LTGRAY);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 Radioo.setButtonTintList(ColorStateList.valueOf(RadioColor));
             Radioo.setOnClickListener(first_radio_listener);
@@ -1913,7 +1569,7 @@ public class Menu {
         collapseSub.setVerticalGravity(16);
         collapseSub.setPadding(0, 5, 0, 5);
         collapseSub.setOrientation(LinearLayout.VERTICAL);
-        collapseSub.setBackgroundColor(TEXT_COLOR);
+        collapseSub.setBackgroundColor(CategoryBG);
         collapseSub.setVisibility(View.GONE);
         mCollapse = collapseSub;
 
@@ -1921,7 +1577,7 @@ public class Menu {
         textView.setBackgroundColor(CategoryBG);
         textView.setText("▽ " + text + " ▽");
         textView.setGravity(Gravity.CENTER);
-        textView.setTextColor(TEXT_COLOR);
+        textView.setTextColor(TEXT_COLOR_2);
         textView.setTypeface(null, Typeface.BOLD);
         textView.setPadding(0, 20, 0, 20);
 
@@ -1953,19 +1609,18 @@ public class Menu {
     }
 
     private void Category(LinearLayout linLayout, String text) {
-		LinearLayout linearLayout = new LinearLayout(getContext);
-		linearLayout.setPadding(30,5,30,5);
         TextView textView = new TextView(getContext);
-        AddColor(textView, CategoryBG, 0, 0, 0, Color.TRANSPARENT, 30, 30, 30, 30, 30, 30, 30, 30);
+        GradientDrawable categorygd = new GradientDrawable();
+		categorygd.setColor(CategoryBG);
+		categorygd.setCornerRadii(new float[]{30,30,30,30,30,30,30,30});
+		categorygd.setStroke(3,Color.WHITE);
+        textView.setBackground(categorygd);
         textView.setText(Html.fromHtml(text));
         textView.setGravity(Gravity.CENTER);
-        textView.setTextColor(TEXT_COLOR);
+        textView.setTextColor(TEXT_COLOR_2);
         textView.setTypeface(null, Typeface.BOLD);
         textView.setPadding(0, 5, 0, 5);
-		textView.setLayoutParams(new LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-		linearLayout.addView(textView);
-        linLayout.addView(linearLayout);
-		
+        linLayout.addView(textView);
     }
 
     private void TextView(LinearLayout linLayout, String text) {
@@ -1984,7 +1639,6 @@ public class Menu {
         wView.getSettings().setAppCacheEnabled(false);
         linLayout.addView(wView);
     }
-	
 	private class EditTextString {
         private String text;
 
@@ -2008,6 +1662,7 @@ public class Menu {
             return val;
         }
     }
+	
 
     private boolean isViewCollapsed() {
         return rootFrame == null || mCollapsed.getVisibility() == View.VISIBLE;
@@ -2031,7 +1686,6 @@ public class Menu {
     public void onDestroy() {
         if (rootFrame != null) {
             mWindowManager.removeView(rootFrame);
-			
         }
     }
 }
